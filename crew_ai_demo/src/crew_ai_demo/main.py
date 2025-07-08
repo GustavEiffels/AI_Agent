@@ -2,7 +2,6 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import os
 import re
-import sys
 import warnings
 from datetime import datetime
 

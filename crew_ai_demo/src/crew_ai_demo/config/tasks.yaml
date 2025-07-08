@@ -1,28 +1,61 @@
+# tasks.yaml
+
 research_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
+    Conduct a thorough and comprehensive research on {topic}, focusing on the latest developments and market trends.
+    Identify key breakthroughs, emerging technologies, significant industry shifts, and gather all relevant raw data for the current year {current_year}.
+    Prioritize data that can be quantitatively analyzed for trends and patterns.
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
+    A structured collection of raw research findings and relevant data points, ready for detailed analysis.
+    This should include links to sources or clearly cited information, and any quantitative data should be in a parsable format (e.g., list of dictionaries or JSON-like structure).
   agent: researcher
+
+data_analysis_task:
+  description: >
+    Perform in-depth statistical and quantitative analysis on the raw data and research findings provided by the Researcher.
+    Identify significant trends, statistical correlations, growth rates, market shares, and any notable anomalies related to {topic} for the year {current_year}.
+    Highlight key metrics and their evolution, and present the findings in a clear, analytical summary.
+  expected_output: >
+    A comprehensive analytical summary, including key quantitative insights, identified trends (e.g., growth rates, market shifts),
+    and any statistically significant patterns or anomalies, presented in a structured text format suitable for report integration.
+  agent: data_analyst
+  context:
+    - research_task
+
+strategy_development_task:
+  description: >
+    Based on the in-depth research findings and the quantitative data analysis, develop actionable and forward-looking strategies and practical recommendations for {topic}.
+    Consider the current market landscape, potential future implications, competitive advantages, and challenges.
+    Formulate specific, measurable, achievable, relevant, and time-bound (SMART) recommendations for stakeholders.
+  expected_output: >
+    A concise list of strategic recommendations, each clearly justified by the research and data analysis,
+    along with their potential impact and practical steps for implementation, presented in a structured format.
+  agent: strategist
+  context:
+    - research_task
+    - data_analysis_task 
 
 reporting_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Consolidate all findings from the Researcher, data analysis from the Data Analyst, and strategic recommendations from the Strategist into a single, comprehensive, and well-structured report.
+    The report must include an executive summary, detailed findings from research, in-depth data analysis insights, and a dedicated section for strategic recommendations.
+    Ensure the report is clear, concise, professional, and logically flows from problem identification to actionable solutions.
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
+    A fully fledged, professional report in English, ready for presentation.
+    The report should be formatted as markdown without '```' and include clear headings for each section (e.g., Executive Summary, Research Findings, Data Analysis, Strategic Recommendations).
   agent: reporting_analyst
-
+  context:
+    - research_task
+    - data_analysis_task
+    - strategy_development_task 
 
 translation_task:
   description: >
-    Translate the entire report provided into natural and accurate Korean.
-    Ensure all sections, headings, and details are translated while maintaining
-    the original meaning and nuance, especially for technical terms.
-    The translated report should be ready for presentation.
+    Translate the entire comprehensive report provided by the Reporting Analyst into natural, accurate, and contextually appropriate Korean.
+    Ensure all sections, headings, sub-headings, and every detail are translated while maintaining the original meaning, nuance, and professional tone, especially for technical terms specific to {topic}.
+    The translated report should be meticulously proofread and ready for immediate presentation to a Korean-speaking audience.
   expected_output: >
-    A fully translated report in Korean, formatted as markdown.
-  agent: translator 
+    A fully translated, polished report in Korean, formatted as markdown.
+  agent: translator
+  context:
+    - reporting_task # 최종 영문 보고서를 context로 활용

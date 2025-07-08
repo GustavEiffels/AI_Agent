@@ -2,27 +2,42 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
-# If you want to run a snippet of code before or after the crew starts,
-# you can use the @before_kickoff and @after_kickoff decorators
-# https://docs.crewai.com/concepts/crews#example-crew-class-with-decorators
+
+# 필요한 경우 여기에 CrewAI Tools를 import합니다.
+# from crewai_tools import SerperDevTool, CodeInterpreterTool # 예시
 
 @CrewBase
 class CrewAiDemo():
-    """CrewAiDemo crew"""
+    """CrewAiDemo crew for comprehensive business analysis"""
 
     agents: List[BaseAgent]
     tasks: List[Task]
 
-    # Learn more about YAML configuration files here:
-    # Agents: https://docs.crewai.com/concepts/agents#yaml-configuration-recommended
-    # Tasks: https://docs.crewai.com/concepts/tasks#yaml-configuration-recommended
-    
-    # If you would like to add tools to your agents, you can learn more about it here:
-    # https://docs.crewai.com/concepts/agents#agent-tools
+    # --- Agent Definitions ---
+    # Agent YAML 설정은 별도의 agents.yaml 파일에 정의되어야 합니다.
+    # 예: config=self.agents_config['researcher']
+
     @agent
     def researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['researcher'], # type: ignore[index]
+            # tools=[SerperDevTool()], # 필요한 도구를 여기에 직접 할당하거나 YAML에서 관리
+            verbose=True
+        )
+
+    @agent
+    def data_analyst(self) -> Agent:
+        return Agent(
+            config=self.agents_config['data_analyst'], # type: ignore[index]
+            # tools=[CodeInterpreterTool()], # 데이터 분석을 위한 도구
+            verbose=True
+        )
+    
+    @agent
+    def strategist(self) -> Agent:
+        return Agent(
+            config=self.agents_config['strategist'], # type: ignore[index]
+            # tools=[SerperDevTool()], # 전략 수립을 위한 추가 검색 도구
             verbose=True
         )
 
@@ -40,10 +55,10 @@ class CrewAiDemo():
             verbose=True
         )
 
+    # --- Task Definitions ---
+    # Task YAML 설정은 별도의 tasks.yaml 파일에 정의되어야 합니다.
+    # 예: config=self.tasks_config['research_task']
 
-    # To learn more about structured task outputs,
-    # task dependencies, and task callbacks, check out the documentation:
-    # https://docs.crewai.com/concepts/tasks#overview-of-a-task
     @task
     def research_task(self) -> Task:
         return Task(
@@ -51,35 +66,62 @@ class CrewAiDemo():
         )
 
     @task
+    def data_analysis_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['data_analysis_task'], # type: ignore[index]
+            context=[self.research_task()] # 연구 결과를 분석 태스크의 컨텍스트로 전달
+        )
+
+    @task
+    def strategy_development_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['strategy_development_task'], # type: ignore[index]
+            context=[
+                self.research_task(),      # 연구 결과
+                self.data_analysis_task()  # 데이터 분석 결과
+            ] # 연구 및 분석 결과를 전략 개발 태스크의 컨텍스트로 전달
+        )
+
+    @task
     def reporting_task(self) -> Task:
         return Task(
             config=self.tasks_config['reporting_task'], # type: ignore[index]
-            output_file='report.md'
+            output_file='report.md',
+            context=[
+                self.research_task(),         # 연구 결과
+                self.data_analysis_task(),    # 데이터 분석 결과
+                self.strategy_development_task() # 전략 개발 결과
+            ] 
         )
     
     @task
     def translation_task(self) -> Task:
         return Task(
             config=self.tasks_config['translation_task'], # type: ignore[index]
-            output_file='report_korean.md', # 번역된 파일 저장 경로
-            context=[self.reporting_task()] # reporting_task의 결과를 translation_task의 컨텍스트로 전달
+            output_file='report_korean.md',
+            context=[self.reporting_task()] # reporting_task의 최종 영문 보고서를 번역 태스크의 컨텍스트로 전달
         )
-
 
     @crew
     def crew(self) -> Crew:
-        """Creates the CrewAiDemo crew"""
-        # To learn how to add knowledge sources to your crew, check out the documentation:
-        # https://docs.crewai.com/concepts/knowledge#what-is-knowledge
+        """Creates the CrewAiDemo comprehensive business analysis crew"""
 
         return Crew(
-            agents=self.agents, # Automatically created by the @agent decorator
+            agents=[
+                self.researcher(),
+                self.data_analyst(),
+                self.strategist(),
+                self.reporting_analyst(),
+                self.translator()
+            ],
             tasks=[
                 self.research_task(),
+                self.data_analysis_task(),
+                self.strategy_development_task(),
                 self.reporting_task(),
-                self.translation_task() # <-- translation_task를 태스크 파이프라인에 추가
+                self.translation_task()
             ],
-            process=Process.sequential,
+            process=Process.sequential, # 태스크들을 순차적으로 실행
             verbose=True,
-            # process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/
+
         )
