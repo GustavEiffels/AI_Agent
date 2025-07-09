@@ -1,5 +1,3 @@
-# tasks.yaml
-
 research_task:
   description: >
     Conduct a thorough and comprehensive research on {topic}, focusing on the latest developments and market trends.
@@ -22,32 +20,70 @@ data_analysis_task:
   context:
     - research_task
 
+financial_analysis_task:
+  description: >
+    Perform a detailed financial analysis of {company_name} using the provided quarterly financial data.
+    The analysis should cover three periods:
+    1. Most recent quarter (A)
+    2. Previous quarter (B)
+    3. Same quarter one year ago (C)
+
+    For each quarter, extract the following metrics:
+    - Current Assets (유동 자산)
+    - Non-current Assets (부동 자산)
+    - Current Liabilities (유동 부채)
+    - Non-current Liabilities (부동 부채)
+    - Operating Profit (영업 이익)
+    - Net Income (당기순 이익)
+
+    Calculate the following financial ratios for each quarter:
+    - Current Ratio (유동비율): Current Assets / Current Liabilities
+    - Debt-to-Equity Ratio (부채비율): Total Liabilities / Shareholder Equity (You'll need to infer Shareholder Equity or assume it's provided, if not, adjust formula or input)
+    - Quick Ratio (당좌비율): (Current Assets - Inventory) / Current Liabilities (Assume inventory is not provided and use a proxy or clarify in the prompt if needed, e.g., (Current Assets - Prepaid Expenses) / Current Liabilities)
+
+    Finally, provide a comparative analysis:
+    - Quarter-over-quarter comparison (A vs. B): Highlight changes in each metric and ratio, along with insights into the company's short-term performance.
+    - Year-over-year comparison (A vs. C): Highlight changes in each metric and ratio, along with insights into long-term trends and seasonal effects.
+
+    The input for this task should be raw financial data for each quarter.
+  expected_output: >
+    A structured financial analysis report including:
+    - Tabular data for each quarter showing all extracted metrics and calculated ratios.
+    - Clear summaries of quarter-over-quarter and year-over-year comparisons for each metric and ratio.
+    - Concise insights derived from the comparative analysis, explaining the financial implications of the changes.
+    The output should be ready for integration into a comprehensive report.
+  agent: financial_analyst
+  context:
+
+
 strategy_development_task:
   description: >
-    Based on the in-depth research findings and the quantitative data analysis, develop actionable and forward-looking strategies and practical recommendations for {topic}.
-    Consider the current market landscape, potential future implications, competitive advantages, and challenges.
+    Based on the in-depth research findings, the quantitative data analysis, and the detailed financial analysis, develop actionable and forward-looking strategies and practical recommendations for {topic} and {company_name}.
+    Consider the current market landscape, potential future implications, competitive advantages, and challenges, incorporating insights from the financial health of the company.
     Formulate specific, measurable, achievable, relevant, and time-bound (SMART) recommendations for stakeholders.
   expected_output: >
-    A concise list of strategic recommendations, each clearly justified by the research and data analysis,
+    A concise list of strategic recommendations, each clearly justified by the research, data analysis, and financial performance insights,
     along with their potential impact and practical steps for implementation, presented in a structured format.
   agent: strategist
   context:
     - research_task
-    - data_analysis_task 
+    - data_analysis_task
+    - financial_analysis_task
 
 reporting_task:
   description: >
-    Consolidate all findings from the Researcher, data analysis from the Data Analyst, and strategic recommendations from the Strategist into a single, comprehensive, and well-structured report.
-    The report must include an executive summary, detailed findings from research, in-depth data analysis insights, and a dedicated section for strategic recommendations.
+    Consolidate all findings from the Researcher, data analysis from the Data Analyst, financial analysis from the Financial Analyst, and strategic recommendations from the Strategist into a single, comprehensive, and well-structured report.
+    The report must include an executive summary, detailed findings from research, in-depth data analysis insights, a dedicated section for financial analysis, and a dedicated section for strategic recommendations.
     Ensure the report is clear, concise, professional, and logically flows from problem identification to actionable solutions.
   expected_output: >
     A fully fledged, professional report in English, ready for presentation.
-    The report should be formatted as markdown without '```' and include clear headings for each section (e.g., Executive Summary, Research Findings, Data Analysis, Strategic Recommendations).
+    The report should be formatted as markdown without '```' and include clear headings for each section (e.g., Executive Summary, Research Findings, Data Analysis, Financial Analysis, Strategic Recommendations).
   agent: reporting_analyst
   context:
     - research_task
     - data_analysis_task
-    - strategy_development_task 
+    - financial_analysis_task
+    - strategy_development_task
 
 translation_task:
   description: >
@@ -58,4 +94,4 @@ translation_task:
     A fully translated, polished report in Korean, formatted as markdown.
   agent: translator
   context:
-    - reporting_task # 최종 영문 보고서를 context로 활용
+    - reporting_task

@@ -120,3 +120,8 @@ Account의 고객명 ( 기업 이름 )을 사용합니다.
 >crewai run
 >```
 
+
+### APP OPERATE
+```commandline
+uvicorn src.crew_ai_demo.main:app --reload --host 0.0.0.0 --port 8000
+```
