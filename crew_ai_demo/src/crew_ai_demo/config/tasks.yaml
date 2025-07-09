@@ -55,34 +55,52 @@ financial_analysis_task:
   agent: financial_analyst
   context:
 
+news_research_task:
+  description: >
+    Identify the three most recent and relevant news articles or official announcements related to {company_name}.
+    **For global or overseas companies (e.g., NVIDIA, Apple, Microsoft), use Yahoo Finance News and specifically look for the most recent articles when searching for '{company_name} news' on that platform.**
+    **For South Korean companies (e.g., Samsung, LG, SK Hynix), use Naver News and specifically look for the most recent articles when searching for '{company_name} 뉴스' on that platform.**
+    Summarize each news item, including the date, source, its URL, and a brief explanation of its significance.
+    Focus on news that could impact the company's market position, financial outlook, or technological developments.
+  expected_output: >
+    A list of the three most important news items for {company_name}, each formatted as:
+    - **Date:** [YYYY-MM-DD]
+    - **Source:** [News Outlet/Official Site]
+    - **Headline:** [Article Headline]
+    - **Summary:** [Brief summary of the news and its significance]
+    - **URL:** [Article URL]
+  agent: news_researcher
+  context:
 
 strategy_development_task:
   description: >
-    Based on the in-depth research findings, the quantitative data analysis, and the detailed financial analysis, develop actionable and forward-looking strategies and practical recommendations for {topic} and {company_name}.
-    Consider the current market landscape, potential future implications, competitive advantages, and challenges, incorporating insights from the financial health of the company.
+    Based on the in-depth research findings, the quantitative data analysis, the detailed financial analysis, AND the latest news, develop actionable and forward-looking strategies and practical recommendations for {topic} and {company_name}.
+    Consider the current market landscape, potential future implications, competitive advantages, and challenges, incorporating insights from the financial health and recent developments of the company.
     Formulate specific, measurable, achievable, relevant, and time-bound (SMART) recommendations for stakeholders.
   expected_output: >
-    A concise list of strategic recommendations, each clearly justified by the research, data analysis, and financial performance insights,
+    A concise list of strategic recommendations, each clearly justified by the research, data analysis, financial performance insights, and recent news,
     along with their potential impact and practical steps for implementation, presented in a structured format.
   agent: strategist
   context:
     - research_task
     - data_analysis_task
     - financial_analysis_task
+    - news_research_task # ADDED CONTEXT
 
 reporting_task:
   description: >
-    Consolidate all findings from the Researcher, data analysis from the Data Analyst, financial analysis from the Financial Analyst, and strategic recommendations from the Strategist into a single, comprehensive, and well-structured report.
-    The report must include an executive summary, detailed findings from research, in-depth data analysis insights, a dedicated section for financial analysis, and a dedicated section for strategic recommendations.
+    Consolidate all findings from the Researcher, data analysis from the Data Analyst, financial analysis from the Financial Analyst, the latest news from the News Researcher, and strategic recommendations from the Strategist into a single, comprehensive, and well-structured report.
+    The report must include an executive summary, detailed findings from research, in-depth data analysis insights, a dedicated section for financial analysis, a dedicated section for recent news, and a dedicated section for strategic recommendations.
     Ensure the report is clear, concise, professional, and logically flows from problem identification to actionable solutions.
   expected_output: >
     A fully fledged, professional report in English, ready for presentation.
-    The report should be formatted as markdown without '```' and include clear headings for each section (e.g., Executive Summary, Research Findings, Data Analysis, Financial Analysis, Strategic Recommendations).
+    The report should be formatted as markdown without '```' and include clear headings for each section (e.g., Executive Summary, Research Findings, Data Analysis, Financial Analysis, Recent News, Strategic Recommendations).
   agent: reporting_analyst
   context:
     - research_task
     - data_analysis_task
     - financial_analysis_task
+    - news_research_task # ADDED CONTEXT
     - strategy_development_task
 
 translation_task:
@@ -93,5 +111,85 @@ translation_task:
   expected_output: >
     A fully translated, polished report in Korean, formatted as markdown.
   agent: translator
+  context:
+    - reporting_task
+
+
+# tasks.yaml
+
+# ... (다른 태스크들)
+
+json_output_task:
+  description: >
+    **CRITICAL: Your sole output MUST be a perfectly valid JSON string that strictly adheres to the provided FullAnalysisReport Pydantic schema.**
+    You will parse the comprehensive English report (context[0]) and also directly use structured financial analysis data if available (context[1]).
+    Your task is to extract all relevant information from these sources and map them precisely to the JSON structure.
+
+    **ENSURE ALL REQUIRED FIELDS ARE PRESENT.** If a data point is truly missing from the report, populate the field with a sensible default:
+    - For string fields: "N/A"
+    - For number fields: 0 (or a specific default if context suggests)
+    - For list fields: an empty list `[]`
+    - For dictionary/object fields: an empty dictionary `{}` or `{ "key": "N/A" }` for required sub-fields.
+
+    The JSON must start with `{"executive_summary": ...` and end correctly. Do not include any preamble, commentary, or markdown backticks (```json) outside of the pure JSON object.
+
+    **Here is the exact schema structure you must follow. Pay close attention to nested objects and their fields:**
+    {
+      "executive_summary": "...",
+      "introduction": {
+        "title": "서론", # <-- title 필드 추가
+        "content": "본 보고서는 엔비디아(NVIDIA)의 최신 기술, 제품, 그리고 시장 동향을 종합적으로 분석하여..."
+      },
+      "company_overview": {
+        "title": "엔비디아 개요", # <-- title 필드 추가
+        "content": "엔비디아는 그래픽 가속 처리에 특화된 반도체 설계 기업으로 출발하여..."
+      },
+      "products_and_technology_analysis": {
+        "title": "제품 및 기술 분석", # <-- title 필드 추가
+        "content": "엔비디아의 GPU는 고성능 컴퓨팅과 그래픽 렌더링 분야에서 탁월한 성능을 입증하고 있습니다..."
+      },
+      "market_status_and_competition": {
+        "title": "시장 현황 및 경쟁 환경", # <-- title 필드 추가
+        "content": "엔비디아는 GPU 시장 점유율 약 80%를 유지하며, 경쟁사 AMD, 인텔과의 경쟁 구도가 지속되고 있습니다..."
+      },
+      "financial_analysis": {
+        "key_financial_metrics": {
+          "Q1_2025": {
+            "current_assets_USD": 0, "non_current_assets_USD": 0, "current_liabilities_USD": 0, "non_current_liabilities_USD": 0,
+            "operating_profit_USD": 0, "net_income_USD": 0, "current_ratio": 0, "debt_to_equity_ratio": 0, "quick_ratio_estimated": 0
+          },
+          "Q4_2024": { ... },
+          "Q1_2024": { ... }
+        },
+        "changes": {
+          "QoQ_percent_changes": { "current_assets": 0, ... },
+          "YoY_percent_changes": { "current_assets": 0, ... }
+        },
+        "financial_insights": ["..."]
+      },
+      "key_risk_factors": {
+        "title": "주요 위험 요소", # <-- title 필드 추가
+        "content": "엔비디아가 직면한 주요 위험 요소는 다음과 같습니다..."
+      },
+      "recent_news": [
+        {
+          "date": "YYYY-MM-DD",
+          "source": "...",
+          "headline": "...",
+          "summary": "...",
+          "url": "..."
+        }
+      ],
+      "conclusion_and_recommendations": {
+        "title": "결론 및 추천 사항", # <-- title 필드 추가
+        "content": "엔비디아는 GPU 및 AI 가속 분야에서 독보적인 기술력과 시장 지위를 바탕으로..."
+      },
+      "sources": ["...", "..."],
+      "report_status": "Complete",
+      "action_command": "None"
+    }
+  expected_output: >
+    A single JSON string representing the `FullAnalysisReport` DTO, strictly following the schema provided in the description. NO additional text or markdown formatting (e.g., ```json) around the JSON.
+  agent: json_formatter
   context:
     - reporting_task

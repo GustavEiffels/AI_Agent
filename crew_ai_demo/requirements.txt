@@ -2,4 +2,5 @@ fastapi
 uvicorn[standard]
 pydantic
 crewai[tools]
-python-dotenv 
+python-dotenv
+pymongo
