@@ -58,8 +58,11 @@ financial_analysis_task:
 news_research_task:
   description: >
     Identify the three most recent and relevant news articles or official announcements related to {company_name}.
-    **For global or overseas companies (e.g., NVIDIA, Apple, Microsoft), use Yahoo Finance News and specifically look for the most recent articles when searching for '{company_name} news' on that platform.**
-    **For South Korean companies (e.g., Samsung, LG, SK Hynix), use Naver News and specifically look for the most recent articles when searching for '{company_name} 뉴스' on that platform.**
+    **The search for 'most recent' should be based on the program's current execution date, {current_date}.**
+    
+    For global or overseas companies (e.g., NVIDIA, Apple, Microsoft), use Yahoo Finance News and specifically look for the most recent articles when searching for '{company_name} news' on that platform.
+    For South Korean companies (e.g., Samsung, LG, SK Hynix), use Naver News and specifically look for the most recent articles when searching for '{company_name} 뉴스' on that platform.
+    
     Summarize each news item, including the date, source, its URL, and a brief explanation of its significance.
     Focus on news that could impact the company's market position, financial outlook, or technological developments.
   expected_output: >

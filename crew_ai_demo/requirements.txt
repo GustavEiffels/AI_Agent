@@ -4,3 +4,4 @@ pydantic
 crewai[tools]
 python-dotenv
 pymongo
+yfinance

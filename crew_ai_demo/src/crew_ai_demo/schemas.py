@@ -23,7 +23,6 @@ class FinancialAnalysisSection(BaseModel):
     financial_insights: List[str] = Field(..., description="재무 상태 및 성과에 대한 분석 인사이트")
 
 
-# --- 단순화된 일반 섹션 DTO (title 필드 추가!) ---
 class GeneralSectionContent(BaseModel):
     """일반적인 보고서 섹션의 내용을 담는 DTO. 큰 제목과 내용을 포함."""
     title: str = Field(..., description="섹션의 제목 (예: '서론', '엔비디아 개요')") # <-- 여기에 title 추가
