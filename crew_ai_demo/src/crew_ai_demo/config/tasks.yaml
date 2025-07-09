@@ -7,6 +7,8 @@ research_task:
     A structured collection of raw research findings and relevant data points, ready for detailed analysis.
     This should include links to sources or clearly cited information, and any quantitative data should be in a parsable format (e.g., list of dictionaries or JSON-like structure).
   agent: researcher
+  output_file: research_task_{company_name}.json
+
 
 data_analysis_task:
   description: >
@@ -19,6 +21,7 @@ data_analysis_task:
   agent: data_analyst
   context:
     - research_task
+  output_file: data_analysis_task_{company_name}.md
 
 financial_analysis_task:
   description: >
@@ -101,6 +104,7 @@ strategy_development_task:
     - data_analysis_task
     - financial_analysis_task
     - news_research_task 
+  output_file: strategy_development_task_{company_name}.json
 
 reporting_task:
   description: >
@@ -117,6 +121,8 @@ reporting_task:
     - financial_analysis_task
     - news_research_task 
     - strategy_development_task
+  output_file: reporting_task_{company_name}.json
+  
 
 translation_task:
   description: >

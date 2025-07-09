@@ -19,7 +19,6 @@ warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
 
 
-
 app = FastAPI()
 
 class CrewInput(BaseModel):
