@@ -2,6 +2,8 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task
 from crewai.agents.agent_builder.base_agent import BaseAgent
 from typing import List
+from .tools.yfinance_news_tool import YFinanceNewsTool
+
 
 @CrewBase
 class CrewAiDemo():
@@ -56,7 +58,10 @@ class CrewAiDemo():
     def news_researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['news_researcher'], # type: ignore[index]
-            verbose=True
+            verbose=True,
+            tools=[
+                YFinanceNewsTool()
+            ]
         )
 
     @agent # NEW AGENT
@@ -91,7 +96,6 @@ class CrewAiDemo():
     def news_research_task(self) -> Task:
         return Task(
             config=self.tasks_config['news_research_task'], # type: ignore[index]
-            # No direct context from other tasks needed, as it will get company_name from initial inputs.
         )
 
     @task
@@ -116,7 +120,7 @@ class CrewAiDemo():
                 self.research_task(),
                 self.data_analysis_task(),
                 self.financial_analysis_task(),
-                self.news_research_task(), # ADDED CONTEXT
+                self.news_research_task(), 
                 self.strategy_development_task()
             ]
         )
@@ -162,7 +166,6 @@ class CrewAiDemo():
                 self.reporting_task(),
                 self.translation_task(),  # Keep translation task if Korean report is also needed
                 self.json_output_task()
-                # ADDED TASK - make sure this is the LAST task if you want its output as final result
             ],
             process=Process.sequential,
             verbose=True,

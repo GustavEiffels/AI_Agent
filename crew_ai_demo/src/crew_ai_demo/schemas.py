@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from typing import List, Optional, Dict, Any
+from typing import List, Optional, Dict, Any # Any 추가 (유연성을 위해)
 
 # --- Financial Analysis DTOs (기존 유지) ---
 class FinancialMetricDetails(BaseModel):
@@ -22,33 +22,33 @@ class FinancialAnalysisSection(BaseModel):
     changes: FinancialChanges
     financial_insights: List[str] = Field(..., description="재무 상태 및 성과에 대한 분석 인사이트")
 
-
-class GeneralSectionContent(BaseModel):
-    """일반적인 보고서 섹션의 내용을 담는 DTO. 큰 제목과 내용을 포함."""
-    title: str = Field(..., description="섹션의 제목 (예: '서론', '엔비디아 개요')") # <-- 여기에 title 추가
-    content: str = Field(..., description="해당 섹션의 전체 내용 문자열")
-
-# --- Recent News DTOs (유지) ---
+# --- Recent News DTOs (NewsItem.summary에 Optional 적용) ---
 class NewsItem(BaseModel):
     date: str = Field(..., description="뉴스 날짜 (YYYY-MM-DD)")
     source: str = Field(..., description="뉴스 출처")
     headline: str = Field(..., description="뉴스 헤드라인")
-    summary: str = Field(..., description="뉴스 요약")
+    summary: Optional[str] = Field(None, description="뉴스 요약") # <-- Optional[str]로 변경, 기본값 None
     url: str = Field(..., description="뉴스 기사 URL")
+
+# --- Strategic Recommendations DTOs (기존 유지) ---
+class StrategicRecommendation(BaseModel):
+    """단일 전략적 권고안을 나타냅니다."""
+    title: str = Field(..., description="전략적 권고안의 제목")
+    actions: List[str] = Field(..., description="권고안에 대한 실행 방안 목록")
 
 
 # --- Full Report DTO (메인 구조 유지) ---
 class FullAnalysisReport(BaseModel):
-    """종합 보고서 구조 (재무 외 섹션은 단순화)."""
     executive_summary: str = Field(..., description="경영진 요약")
-    introduction: GeneralSectionContent = Field(..., description="서론")
-    company_overview: GeneralSectionContent = Field(..., description="엔비디아 개요")
-    products_and_technology_analysis: GeneralSectionContent = Field(..., description="제품 및 기술 분석")
-    market_status_and_competition: GeneralSectionContent = Field(..., description="시장 현황 및 경쟁 환경")
+    introduction: str = Field(..., description="서론의 전체 내용")
+    company_overview: str = Field(..., description="엔비디아 개요의 전체 내용")
+    products_and_technology_analysis: str = Field(..., description="제품 및 기술 분석의 전체 내용")
+    market_status_and_competition: str = Field(..., description="시장 현황 및 경쟁 환경의 전체 내용")
     financial_analysis: FinancialAnalysisSection # 복잡한 재무 구조 유지
-    key_risk_factors: GeneralSectionContent = Field(..., description="주요 위험 요소")
+    key_risk_factors: str = Field(..., description="주요 위험 요소의 전체 내용")
     recent_news: List[NewsItem] = Field(..., description="최신 뉴스 목록")
-    conclusion_and_recommendations: GeneralSectionContent = Field(..., description="결론 및 추천 사항")
+    strategic_recommendations: List[StrategicRecommendation] = Field(..., description="전략적 권고안 목록")
+    conclusion_and_recommendations: str = Field(..., description="결론 및 추천 사항의 전체 내용")
 
     sources: List[str] = Field(..., description="보고서 작성에 사용된 출처 목록")
     report_status: str = Field("Complete", description="보고서 생성 상태")
