@@ -34,7 +34,7 @@ class NewsItem(BaseModel):
 class StrategicRecommendation(BaseModel):
     """단일 전략적 권고안을 나타냅니다."""
     title: str = Field(..., description="전략적 권고안의 제목")
-    actions: List[str] = Field(..., description="권고안에 대한 실행 방안 목록")
+    contents: List[str] = Field(..., description="권고안의 상세 내용 (정당화, 영향, 실행 단계, SMART 목표 포함)") # <-- actions -> contents 변경
 
 
 # --- Full Report DTO (메인 구조 유지) ---

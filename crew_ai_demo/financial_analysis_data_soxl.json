@@ -1,0 +1,68 @@
+{
+  "key_financial_metrics": {
+    "Q1_2025": {
+      "current_assets_USD": 2150000000,
+      "non_current_assets_USD": 1800000000,
+      "current_liabilities_USD": 1300000000,
+      "non_current_liabilities_USD": 700000000,
+      "operating_profit_USD": 450000000,
+      "net_income_USD": 360000000,
+      "current_ratio": 1.65,
+      "debt_to_equity_ratio": 1.10,
+      "quick_ratio_estimated": 1.65
+    },
+    "Q4_2024": {
+      "current_assets_USD": 2000000000,
+      "non_current_assets_USD": 1780000000,
+      "current_liabilities_USD": 1250000000,
+      "non_current_liabilities_USD": 710000000,
+      "operating_profit_USD": 400000000,
+      "net_income_USD": 320000000,
+      "current_ratio": 1.60,
+      "debt_to_equity_ratio": 1.14,
+      "quick_ratio_estimated": 1.60
+    },
+    "Q1_2024": {
+      "current_assets_USD": 1900000000,
+      "non_current_assets_USD": 1750000000,
+      "current_liabilities_USD": 1200000000,
+      "non_current_liabilities_USD": 680000000,
+      "operating_profit_USD": 420000000,
+      "net_income_USD": 340000000,
+      "current_ratio": 1.58,
+      "debt_to_equity_ratio": 1.08,
+      "quick_ratio_estimated": 1.58
+    }
+  },
+  "changes": {
+    "QoQ_percent_changes": {
+      "current_assets": 7.50,
+      "non_current_assets": 1.12,
+      "current_liabilities": 4.00,
+      "non_current_liabilities": -1.41,
+      "operating_profit": 12.50,
+      "net_income": 12.50,
+      "current_ratio": 3.13,
+      "debt_to_equity_ratio": -3.51,
+      "quick_ratio_estimated": 3.13
+    },
+    "YoY_percent_changes": {
+      "current_assets": 13.16,
+      "non_current_assets": 2.86,
+      "current_liabilities": 8.33,
+      "non_current_liabilities": 2.94,
+      "operating_profit": 7.14,
+      "net_income": 5.88,
+      "current_ratio": 4.43,
+      "debt_to_equity_ratio": 1.85,
+      "quick_ratio_estimated": 4.43
+    }
+  },
+  "financial_insights": [
+    "From Q4 2024 to Q1 2025, SOXL shows a healthy increase in current assets (+7.5%) and operating profit (+12.5%), indicating improved short-term liquidity and operational efficiency.",
+    "Current ratio improved to 1.65, enhancing the company's ability to meet short-term obligations, while the debt-to-equity ratio decreased by 3.51%, suggesting a modest reduction in financial leverage.",
+    "Year-over-year comparison shows steady growth in both assets and profitability, with current assets increasing by 13.16% and net income by 5.88%, reflecting positive long-term growth prospects.",
+    "The slight increase in the debt-to-equity ratio year-over-year (+1.85%) indicates marginally higher leverage but still within manageable levels.",
+    "Quick ratio estimates mirror the current ratio due to lack of inventory data, suggesting strong liquidity positions throughout the periods considered."
+  ]
+}

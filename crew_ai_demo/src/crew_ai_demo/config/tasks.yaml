@@ -47,13 +47,28 @@ financial_analysis_task:
 
     The input for this task should be raw financial data for each quarter.
   expected_output: >
-    A structured financial analysis report including:
-    - Tabular data for each quarter showing all extracted metrics and calculated ratios.
-    - Clear summaries of quarter-over-quarter and year-over-year comparisons for each metric and ratio.
-    - Concise insights derived from the comparative analysis, explaining the financial implications of the changes.
-    The output should be ready for integration into a comprehensive report.
+    A JSON string strictly conforming to the `FinancialAnalysisSection` Pydantic DTO.
+    This JSON MUST contain `key_financial_metrics` (with 'Q1_2025', 'Q4_2024', 'Q1_2024' as keys or similar quarter identifiers), `changes` (with 'QoQ_percent_changes' and 'YoY_percent_changes'), and `financial_insights`.
+    Populate all numerical fields with 0 if data is not available, and all list fields with `[]` if empty.
+    The JSON output MUST NOT contain any additional text, markdown formatting (e.g., ```json), or commentary outside the pure JSON object.
+    Example JSON:
+    ```json
+    {
+      "key_financial_metrics": {
+        "Q1_2025": { "current_assets_USD": 0, "non_current_assets_USD": 0, "current_liabilities_USD": 0, "non_current_liabilities_USD": 0, "operating_profit_USD": 0, "net_income_USD": 0, "current_ratio": 0, "debt_to_equity_ratio": 0, "quick_ratio_estimated": 0 },
+        "Q4_2024": { "current_assets_USD": 0, "non_current_assets_USD": 0, "current_liabilities_USD": 0, "non_current_liabilities_USD": 0, "operating_profit_USD": 0, "net_income_USD": 0, "current_ratio": 0, "debt_to_equity_ratio": 0, "quick_ratio_estimated": 0 },
+        "Q1_2024": { "current_assets_USD": 0, "non_current_assets_USD": 0, "current_liabilities_USD": 0, "non_current_liabilities_USD": 0, "operating_profit_USD": 0, "net_income_USD": 0, "current_ratio": 0, "debt_to_equity_ratio": 0, "quick_ratio_estimated": 0 }
+      },
+      "changes": {
+        "QoQ_percent_changes": { "current_assets": 0, "non_current_assets": 0, "current_liabilities": 0, "non_current_liabilities": 0, "operating_profit": 0, "net_income": 0, "current_ratio": 0, "debt_to_equity_ratio": 0, "quick_ratio_estimated": 0 },
+        "YoY_percent_changes": { "current_assets": 0, "non_current_assets": 0, "current_liabilities": 0, "non_current_liabilities": 0, "operating_profit": 0, "net_income": 0, "current_ratio": 0, "debt_to_equity_ratio": 0, "quick_ratio_estimated": 0 }
+      },
+      "financial_insights": ["N/A"]
+    }
+    ```
   agent: financial_analyst
   context:
+  output_file: financial_analysis_data_{company_name}.json 
 
 news_research_task:
   description: >
@@ -70,6 +85,7 @@ news_research_task:
     A list of the three most important news items for {company_name}, each formatted as a dictionary with 'date' (YYYY-MM-DD), 'source', 'headline', 'summary', and 'url' fields.
   agent: news_researcher
   context:
+  output_file: news_articles_{company_name}.json
 
 strategy_development_task:
   description: >
@@ -147,11 +163,26 @@ json_output_task:
         "financial_insights": []
       },
       "key_risk_factors": "N/A",
-      "recent_news": [
-        { "date": "N/A", "source": "N/A", "headline": "N/A", "summary": "N/A", "url": "N/A" }
-      ],
-      "strategic_recommendations": [
-        { "title": "N/A", "actions": [] }
+      "recent_news": [],
+      "strategic_recommendations": [ 
+        {
+          "title": "전략 권고안 제목 1",
+          "contents": [ # <-- 'actions' 대신 'contents'로 변경
+            "*Justification:* 이 권고안에 대한 정당화 내용입니다.",
+            "*Potential Impact:* 잠재적 영향에 대한 설명입니다.",
+            "*Implementation Steps:*",
+            "  - 첫 번째 실행 단계",
+            "  - 두 번째 실행 단계",
+            "*SMART Target:* SMART 목표 내용입니다."
+          ]
+        },
+        {
+          "title": "전략 권고안 제목 2",
+          "contents": [
+            "두 번째 권고안의 모든 상세 내용이 여기에 포함됩니다.",
+            "이것은 마크다운 형식의 불릿 포인트나 문단으로 이루어질 수 있습니다."
+          ]
+        }
       ],
       "conclusion_and_recommendations": "N/A",
       "sources": [],
