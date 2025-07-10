@@ -18,39 +18,70 @@ def get_financial_quarters_info(current_date=None):
     current_month = current_date.month
     current_day = current_date.day
 
-    latest_quarter = {'year': None, 'code': None, 'info': None, 'q_num': None} 
-
-    if current_month < 5 or (current_month == 5 and current_day < 15):
-        latest_quarter.update({'year': current_year - 1, 'code': '11011', 'info': f"{current_year - 1}년 4분기", 'q_num': 4})
-    elif current_month < 8 or (current_month == 8 and current_day < 14):
-        latest_quarter.update({'year': current_year, 'code': '11013', 'info': f"{current_year}년 1분기", 'q_num': 1})
-    elif current_month < 11 or (current_month == 11 and current_day < 14):
-        latest_quarter.update({'year': current_year, 'code': '11012', 'info': f"{current_year}년 2분기", 'q_num': 2})
-    else:
-        latest_quarter.update({'year': current_year, 'code': '11014', 'info': f"{current_year}년 3분기", 'q_num': 3})
-
-    previous_quarter = {}
-    if latest_quarter['q_num'] == 1:
-        previous_quarter = {'year': latest_quarter['year'] - 1, 'code': '11011', 'info': f"{latest_quarter['year'] - 1}년 4분기"}
-    elif latest_quarter['q_num'] == 2:
-        previous_quarter = {'year': latest_quarter['year'], 'code': '11013', 'info': f"{latest_quarter['year']}년 1분기"}
-    elif latest_quarter['q_num'] == 3:
-        previous_quarter = {'year': latest_quarter['year'], 'code': '11012', 'info': f"{latest_quarter['year']}년 2분기"}
-    elif latest_quarter['q_num'] == 4:
-        previous_quarter = {'year': latest_quarter['year'], 'code': '11014', 'info': f"{latest_quarter['year']}년 3분기"}
-
-    previous_year_same_quarter = {
-        'year': latest_quarter['year'] - 1,
-        'code': latest_quarter['code'],
-        'info': f"{latest_quarter['year'] - 1}년 {latest_quarter['info'].split('년 ')[1]}"
+    # Define DART quarter codes and their corresponding info strings
+    # '11013': 1st Quarter, '11012': 2nd Quarter, '11014': 3rd Quarter, '11011': 4th Quarter (Annual)
+    quarter_codes = {
+        1: {'code': '11013', 'info_suffix': '1분기', 'cutoff_month': 5, 'cutoff_day': 15}, # 1분기 보고서 제출 마감 (5월 15일)
+        2: {'code': '11012', 'info_suffix': '2분기', 'cutoff_month': 8, 'cutoff_day': 14}, # 2분기 보고서 제출 마감 (8월 14일)
+        3: {'code': '11014', 'info_suffix': '3분기', 'cutoff_month': 11, 'cutoff_day': 14},# 3분기 보고서 제출 마감 (11월 14일)
+        4: {'code': '11011', 'info_suffix': '4분기', 'cutoff_month': 3, 'cutoff_day': 31}  # 연간(4분기) 보고서 제출 마감 (3월 31일, 실제로는 90일이므로 3월 말)
     }
 
-    return {
-        'latest_quarter': latest_quarter,
-        'previous_quarter': previous_quarter,
-        'previous_year_same_quarter': previous_year_same_quarter
-    }
+    latest_available_q_num = 0
+    if (current_month > 5) or (current_month == 5 and current_day >= 15): # After 1st quarter report submission (May 15)
+        latest_available_q_num = 1
+    if (current_month > 8) or (current_month == 8 and current_day >= 14): # After 2nd quarter report submission (Aug 14)
+        latest_available_q_num = 2
+    if (current_month > 11) or (current_month == 11 and current_day >= 14): # After 3rd quarter report submission (Nov 14)
+        latest_available_q_num = 3
+    if (current_month < 5): 
+        if (current_month == 1 and current_day <= 15):
+            pass
+        latest_available_q_num = 4 # Refers to the 4th quarter of the *previous* year
 
+
+    financial_quarters = []
+
+    for q_num in range(1, latest_available_q_num + 1):
+        if q_num == 4 and latest_available_q_num != 4: 
+            continue
+
+        quarter_info = quarter_codes[q_num]
+        year_to_use = current_year
+        if q_num == 4: 
+            if current_month < quarter_info['cutoff_month'] or \
+               (current_month == quarter_info['cutoff_month'] and current_day < quarter_info['cutoff_day']):
+                continue
+        
+        financial_quarters.append({
+            'year': year_to_use,
+            'code': quarter_info['code'],
+            'info': f"{year_to_use}년 {quarter_info['info_suffix']}",
+            'q_num': q_num
+        })
+
+    years_to_cover = []
+    
+    previous_full_year = current_year - 1
+    years_to_cover.append(previous_full_year)
+
+    year_before_previous_full_year = current_year - 2
+    years_to_cover.append(year_before_previous_full_year)
+
+    for year in years_to_cover:
+        for q_num in range(1, 5): 
+            quarter_info = quarter_codes[q_num]
+            
+            if {'year': year, 'code': quarter_info['code'], 'q_num': q_num} not in [{'year': q['year'], 'code': q['code'], 'q_num': q['q_num']} for q in financial_quarters]:
+                 financial_quarters.append({
+                    'year': year,
+                    'code': quarter_info['code'],
+                    'info': f"{year}년 {quarter_info['info_suffix']}",
+                    'q_num': q_num
+                })
+    financial_quarters.sort(key=lambda x: (x['year'], x['q_num']))
+
+    return {'all_quarters': financial_quarters}
 
 # 🔹 값 추출 함수
 def convert(df: pd.DataFrame, mask: pd.Series):
@@ -58,6 +89,39 @@ def convert(df: pd.DataFrame, mask: pd.Series):
         return int(df.loc[mask].iloc[0]['thstrm_amount'])
     except Exception:
         return None
+
+# 🔹 기업 존재 여부 확인 
+def company_name_exist(name:str)->dict:
+
+    return_data = {
+        'exist':True,
+        'message':f'{name} Exist'
+    }
+
+    api_key = os.getenv("DART_KEY")
+    if api_key is None:
+        raise ValueError("DART_KEY 환경 변수가 없습니다. .env 파일을 확인하세요.")    
+        
+    dart = OpenDartReader(api_key)
+    try:
+        corp_info = dart.list(name)
+    except Exception as e:
+        return_data['exist'] = False
+        return_data['message'] = f'{name}에 대한 기업 정보를 찾을 수 없습니다.'
+        return return_data 
+
+    if corp_info is None or corp_info.empty:
+        return_data['exist'] = False
+        return_data['message'] = f'{name}에 대한 기업 정보를 찾을 수 없습니다.'
+        return return_data
+
+    filtered = corp_info[corp_info['corp_name'] == name]
+
+    if filtered.empty:
+        return_data['exist'] = False
+        return_data['message'] = f'{name}이름과 정확히 일치하는 기업 정보를 찾지 못했습니다.'
+    
+    return return_data
 
 # 🔹 Pydantic 입력 스키마 정의
 class FinancialDataInput(BaseModel):
@@ -86,20 +150,27 @@ class CollectFinancialDataTool(BaseTool):
         if filtered.empty:
             raise ValueError(f"{company_name} 이름과 정확히 일치하는 기업 정보를 찾지 못했습니다.")
 
-        q_data = get_financial_quarters_info()
+
+        corp_code = filtered.iloc[0]['corp_code']
+
+        result = dart.document_all(rcp_no=corp_code)
+        print('result : result')
+
+        quarters_to_fetch  = get_financial_quarters_info()['all_quarters']
         result_json = {}
 
-        for q_key, data in q_data.items():
-            code = data['code']
-            year = data['year']
+        for data in quarters_to_fetch:
+            code  = data['code']
+            year  = data['year']
+            q_num = data['q_num']
 
             try:
                 df1 = pd.DataFrame(dart.finstate_all(company_name, year, reprt_code=code, fs_div='CFS'))
             except Exception as e:
-                result_json[q_key] = {'error': f"{year} {code} 데이터 조회 실패: {str(e)}"}
+                result_json[f'{year}_{q_num}'] = {'error': f"{year} {code} 데이터 조회 실패: {str(e)}"}
                 continue
 
-            result_json[q_key] = {
+            result_json[f'{year}_{q_num}'] = {
                 'asset_moveable':   convert(df1, (df1.sj_nm == '재무상태표') & (df1.account_nm == '유동자산')),
                 'asset_unmoveable': convert(df1, (df1.sj_nm == '재무상태표') & (df1.account_nm == '비유동자산')),
                 'bet_moveable':     convert(df1, (df1.sj_nm == '재무상태표') & (df1.account_nm == '유동부채')),
@@ -121,5 +192,27 @@ class CollectFinancialDataTool(BaseTool):
                                                 '연결당기순이익', '연결분기(당기)순이익', '연결반기(당기)순이익', '연결분기순이익(손실)'
                                             ]))
             }
-
         return result_json
+
+
+
+
+if __name__ == "__main__":
+    if not os.getenv("DART_KEY"):
+        print("Warning: DART_KEY 환경 변수가 설정되지 않았습니다. 테스트를 위해 .env 파일을 확인하거나 직접 설정하세요.")
+
+
+    financial_tool = CollectFinancialDataTool()
+
+    test_company_name = input("테스트할 한국 기업 이름을 입력하세요 (예: 삼성전자): ")
+
+    print(f"\nCollecting financial data for: {test_company_name}")
+    try:
+        financial_data_result = financial_tool._run(company_name=test_company_name)
+        
+        print("\n--- Financial Data Collection Result ---")
+        import json
+        print(json.dumps(financial_data_result, indent=2, ensure_ascii=False))
+
+    except Exception as e:
+        print(f"\nAn error occurred during tool execution: {e}")

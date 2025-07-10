@@ -13,21 +13,63 @@ financial_task:
     Given the company name '{company_name}', determine if it is a Korean company based on the 'is_korean' input ('{is_korean}').
 
     If '{is_korean}' is 'true' (meaning it's a Korean company):
-    Collect its financial data for the latest quarter, the previous quarter, and the same quarter of the previous year
-    using the 'Financial Data Collector' tool. After collecting the data,
-    compare the financial performance across these three periods. Focus on key metrics such as 'revenue',
-    'operating_income', 'net_income', 'amount_asset', and 'amount_bet'.
-    Analyze trends, significant changes, and provide insights into the company's financial health and performance over time.
-    Present the comparison clearly and highlight any notable observations.
+    Collect its financial data for approximately the last two years (all available quarters within this period)
+    using the 'Dart Financial Data Collector' tool. After collecting the data,
+    perform a comprehensive time-series analysis of key financial metrics including 'revenue',
+    'operating_income', 'net_income', 'asset_moveable' (유동자산), 'asset_unmoveable' (비유동자산),
+    'bet_moveable' (유동부채), 'bet_unmoveable' (비유동부채), 'amount_asset' (자본총계), and 'amount_bet' (부채총계).
+    
+    Analyze trends, significant changes, and inter-relationships between these metrics over the entire two-year period.
+    Based on this analysis, derive a **forward-looking financial outlook (전망)** for the company,
+    identifying potential future performance and risks.
+    
+    The final output should be a structured JSON object containing:
+    1. A summary of the financial data collected for each quarter.
+    2. Key trends identified for each metric.
+    3. Derived financial outlook/prospects with reasoning.
+    4. Any identified risks or opportunities.
 
     If '{is_korean}' is 'false' (meaning it's NOT a Korean company):
-    State clearly that the financial analysis is not applicable as the company is not Korean, and the 'Financial Data Collector' tool is for Korean companies only. No financial data collection or analysis should be performed.
-  expected_output: >
-    A comprehensive financial analysis report for '{company_name}' comparing the latest quarter, previous quarter, 
-    and previous year's same quarter for key financial metrics (revenue, operating income, net income, total assets, total liabilities), 
-    along with insightful interpretations of the company's financial trends and health. 
-    OR a clear statement that financial analysis is not applicable if '{company_name}' is not a Korean company.
+    State clearly that the financial analysis is not applicable as the company is not Korean, and the 'CollectFinancialDataTool' tool is for Korean companies only. No financial data collection or analysis should be performed.
+    The output should be a JSON object indicating the reason for non-applicability.
+  expected_output: |
+      A structured JSON object representing the comprehensive financial analysis.
+      
+      If it's a Korean company, the JSON should include:
+      ```json
+      {
+        "company_name": "{company_name}",
+        "financial_data_by_quarter": {
+          "YYYY_Q1": { ... },
+          "YYYY_Q2": { ... },
+          "YYYY_Q3": { ... },
+          "YYYY_Q4": { ... }
+          // ... for approximately the last two years
+        },
+        "key_trends": {
+          "revenue_trend": "...",
+          "operating_income_trend": "...",
+          "net_income_trend": "...",
+          "asset_liability_structure_trend": "...",
+          // ... other relevant trends
+        },
+        "financial_outlook": "...",
+        "risks_and_opportunities": [
+          "Risk 1",
+          "Opportunity 1"
+        ]
+      }
+      ```
+      If it's NOT a Korean company, the JSON should be:
+      ```json
+      {
+        "company_name": "{company_name}",
+        "status": "Financial analysis not applicable",
+        "reason": "This tool is exclusively for Korean companies."
+      }
+      ```
   agent: financial_analyst
+  output_file: financial_analysis_{company_name}.json
 
 reporting_task:
   description: >

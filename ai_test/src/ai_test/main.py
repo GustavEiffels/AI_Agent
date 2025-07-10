@@ -9,6 +9,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field # Pydantic BaseModel과 Field 임포트
 from ai_test.crew import AiTest 
 from dotenv import load_dotenv
+import ai_test.tools.dart_tool as dart
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="pydantic")
@@ -30,13 +31,17 @@ class FinancialAnalysisRequest(BaseModel):
 
 @app.post("/run") 
 async def run_crew(request: FinancialAnalysisRequest) -> Dict: 
-    """
-    Triggers the AI Crew to perform general research and financial analysis for a specified company.
-    If the company is Korean, it will attempt to fetch DART financial data.
-    """
     company_name = request.company_name
     topic = request.topic
     is_korean_str = 'true' if request.is_korean else 'false' 
+
+    if is_korean_str:
+        result = dart.company_name_exist(request.company_name)
+        print(f'result : {result}')
+        if result['exist'] == False:
+            return {"status": "fail", "company_name": company_name, "message": result['message']}
+
+
 
     inputs = {
         'topic': topic,

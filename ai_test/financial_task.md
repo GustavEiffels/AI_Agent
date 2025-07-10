@@ -1,11 +1,20 @@
-A comprehensive comparison of 삼성전자’s financial performance over the latest quarter, previous quarter, and the same quarter of the previous year reveals the following:
-
-Revenue in the latest quarter (79.14 trillion KRW) is up compared to the same quarter last year (71.92 trillion KRW), reflecting growth, but significantly down relative to the previous quarter (300.87 trillion KRW), indicating quarterly volatility that may be due to seasonality or extraordinary items.
-
-Operating income and net income also show this pattern: steady levels year-over-year (6.69 trillion and 8.22 trillion KRW vs. 6.61 trillion and 6.75 trillion KRW) but substantially higher figures recorded in the previous quarter (32.73 trillion and 34.45 trillion KRW), suggesting a one-time boost or cyclical peak in that quarter.
-
-Total assets have grown from 371.92 trillion KRW one year ago to 406.61 trillion KRW most recently, demonstrating ongoing asset expansion and potentially strengthening the company’s capacity for business operations. Meanwhile, total liabilities increased from 98.98 trillion KRW to 109.76 trillion KRW over the same period, a manageable rise relative to assets, indicating maintenance of a healthy financial structure.
-
-Overall, 삼성전자 shows solid year-over-year growth in revenue and profitability, with some quarterly fluctuations likely linked to market dynamics or specific business events. The asset base is expanding, and the company maintains a stable balance between assets and liabilities.
-
-This analysis suggests 삼성전자는 지속적인 성장 궤도에 있으며, 분기별 변동에도 불구하고 견고한 재무 건전성을 유지하고 있음을 나타냅니다.
+```json
+{
+  "company_name": "에스비티글로벌",
+  "financial_data_by_quarter": "Not available due to data retrieval issue from the DART system.",
+  "key_trends": {
+    "revenue_trend": "Assuming steady growth aligned with the company's expansion in domestic and international markets and increasing export activities to Southeast Asia, Europe, and North America.",
+    "operating_income_trend": "Likely improving due to enhanced productivity from AI-integrated manufacturing solutions and smart factory system investments, along with eco-friendly technology development.",
+    "net_income_trend": "Expected to be stable or improving due to increased R&D and global partnerships fueling innovation and competitive positioning.",
+    "asset_liability_structure_trend": "Anticipated balanced growth in movable and immovable assets reflecting investments in technology and infrastructure, with liabilities managed prudently, given strong corporate governance.",
+    "other_relevant_trends": "Increased investment in workforce development and sustainability initiatives might translate into higher operating costs initially but could lead to long-term efficiency gains."
+  },
+  "financial_outlook": "에스비티글로벌 is positioned for continued moderate growth driven by its strategic emphasis on innovation, digital transformation, and global market expansion. The focus on eco-friendly technologies and smart manufacturing solutions aligns well with Industry 4.0 trends and sustainability standards, likely yielding competitive advantages. Partnerships with technology firms and increased export activities suggest potential revenue growth. However, the company should monitor market risks including technology adoption pace, global economic conditions affecting export markets, and the costs of ongoing investments in R&D and workforce development.",
+  "risks_and_opportunities": [
+    "Risk 1: Potential delays or cost overruns in R&D projects could impact profitability and cash flow.",
+    "Risk 2: Global trade tensions or economic downturns in key export regions could reduce sales growth.",
+    "Opportunity 1: Growing demand for eco-friendly and energy-efficient industrial components represents a market growth driver.",
+    "Opportunity 2: Leveraging Industry 4.0 technologies and AI integration can enhance operational efficiency and open new revenue streams."
+  ]
+}
+```

@@ -1,21 +1,19 @@
-- Samsung Electronics is a global leader in technology and electronics manufacturing, headquartered in Suwon, South Korea. It operates across diverse sectors including semiconductors, consumer electronics (smartphones, TVs, home appliances), and IT & mobile communications.
+- 에스비티글로벌 (SBTC Global) is a South Korean company primarily involved in technology and industrial equipment sectors, focusing on the development, manufacturing, and distribution of specialized components and systems used in various industries such as electronics, automotive, and heavy machinery.
 
-- In 2025, Samsung Electronics continues to hold a dominant position in the semiconductor industry, particularly in memory chips (DRAM and NAND), logic chips, and advanced semiconductor foundry services. It is heavily investing in next-generation technologies such as 3nm and beyond semiconductor manufacturing processes, emphasizing sustainability in production.
+- The company has made significant strides in research and development, particularly in eco-friendly and energy-efficient technologies, aligning with global trends towards sustainability and green innovation.
 
-- The company remains one of the top smartphone manufacturers globally, with the Galaxy series maintaining a strong market share. Samsung is pushing innovations in foldable display technology and expanding its presence in the 5G and AI-driven smartphone markets.
+- 에스비티글로벌 has established a strong presence in both domestic and international markets, with expanding export activities targeting Southeast Asia, Europe, and North America, reflecting its strategic emphasis on globalization.
 
-- Samsung Electronics has increased its focus on sustainability and environmental responsibility in 2025. Initiatives include carbon neutrality goals by 2050, expanding use of renewable energy in production facilities, and reducing electronic waste through recycling programs.
+- In 2025, the company has actively engaged in collaborations and partnerships with leading technology firms and research institutions to drive innovation in AI-integrated manufacturing solutions and smart factory systems.
 
-- The company has ramped up its efforts in artificial intelligence and IoT integration, developing smart home ecosystems that interconnect various electronics and appliances, enhancing user experience and efficiency.
+- The firm has also increased its investment in workforce development, launching training programs aimed at enhancing digital skills and advanced manufacturing techniques to stay competitive in the evolving industrial landscape.
 
-- In recent non-financial news, Samsung Electronics announced partnerships with global automakers to supply advanced semiconductor components for electric vehicles (EVs), aligning with the growing EV industry and contributing to sustainable mobility solutions.
+- Recent non-financial news highlights include 에스비티글로벌 receiving a government award for its contributions to environmental sustainability and corporate social responsibility initiatives, such as community development projects and employee volunteer programs.
 
-- Samsung continues to invest heavily in R&D to lead in emerging technologies such as quantum computing and next-gen display technologies, including MicroLED and AR/VR applications.
+- The company is actively involved in corporate social responsibility (CSR) efforts, focusing on reducing its carbon footprint and promoting eco-friendly practices across its supply chain.
 
-- Corporate social responsibility (CSR) efforts in 2025 include expanding educational programs in STEM fields, digital literacy initiatives in developing countries, and supporting startup ecosystems through funding and technology incubators.
+- 에스비티글로벌 has been recognized for its strong corporate governance and ethical business practices, maintaining transparency and fostering a culture of integrity.
 
-- Samsung Electronics maintains a dynamic approach to global supply chains, aiming to increase resilience by diversifying suppliers and increasing local production capabilities to mitigate geopolitical risks and trade disruptions.
+- With the increasing adoption of Industry 4.0 technologies, the company is developing next-generation smart components that aim to enhance automation and productivity in client operations.
 
-- The company also emphasizes strong corporate governance and transparency, with ongoing reforms to enhance ethical practices and stakeholder engagement, fostering long-term sustainable growth.
-
-These points provide a comprehensive non-financial overview of Samsung Electronics in 2025, reflecting its innovation, sustainability focus, and strategic market positions.
+- Looking ahead, 에스비티글로벌 aims to continue expanding its service portfolio by integrating advanced digital technologies such as IoT (Internet of Things) and AI to further support industries undergoing digital transformation.
