@@ -1,70 +1,70 @@
 {
   "key_financial_metrics": {
     "Q1_2025": {
-      "current_assets_USD": 174250000000,
-      "non_current_assets_USD": 350200000000,
-      "current_liabilities_USD": 63000000000,
-      "non_current_liabilities_USD": 120500000000,
-      "operating_profit_USD": 25000000000,
-      "net_income_USD": 18304000000,
-      "current_ratio": 2.77,
-      "debt_to_equity_ratio": 0.45,
-      "quick_ratio_estimated": 2.77
+      "current_assets_USD": 181300000000,
+      "non_current_assets_USD": 200500000000,
+      "current_liabilities_USD": 64000000000,
+      "non_current_liabilities_USD": 45000000000,
+      "operating_profit_USD": 27000000000,
+      "net_income_USD": 21000000000,
+      "current_ratio": 2.83,
+      "debt_to_equity_ratio": 0.47,
+      "quick_ratio_estimated": 2.83
     },
     "Q4_2024": {
-      "current_assets_USD": 164000000000,
-      "non_current_assets_USD": 340000000000,
+      "current_assets_USD": 175000000000,
+      "non_current_assets_USD": 195000000000,
       "current_liabilities_USD": 62000000000,
-      "non_current_liabilities_USD": 117000000000,
-      "operating_profit_USD": 24000000000,
-      "net_income_USD": 17600000000,
-      "current_ratio": 2.65,
-      "debt_to_equity_ratio": 0.46,
-      "quick_ratio_estimated": 2.65
+      "non_current_liabilities_USD": 46000000000,
+      "operating_profit_USD": 25500000000,
+      "net_income_USD": 20500000000,
+      "current_ratio": 2.82,
+      "debt_to_equity_ratio": 0.49,
+      "quick_ratio_estimated": 2.82
     },
     "Q1_2024": {
-      "current_assets_USD": 155000000000,
-      "non_current_assets_USD": 335000000000,
-      "current_liabilities_USD": 60000000000,
-      "non_current_liabilities_USD": 115000000000,
+      "current_assets_USD": 164000000000,
+      "non_current_assets_USD": 190000000000,
+      "current_liabilities_USD": 58000000000,
+      "non_current_liabilities_USD": 44000000000,
       "operating_profit_USD": 23000000000,
-      "net_income_USD": 17000000000,
-      "current_ratio": 2.58,
-      "debt_to_equity_ratio": 0.48,
-      "quick_ratio_estimated": 2.58
+      "net_income_USD": 19000000000,
+      "current_ratio": 2.83,
+      "debt_to_equity_ratio": 0.50,
+      "quick_ratio_estimated": 2.83
     }
   },
   "changes": {
     "QoQ_percent_changes": {
-      "current_assets": 6.28,
-      "non_current_assets": 2.94,
-      "current_liabilities": 1.61,
-      "non_current_liabilities": 2.99,
-      "operating_profit": 4.17,
-      "net_income": 3.91,
-      "current_ratio": 4.53,
-      "debt_to_equity_ratio": -2.17,
-      "quick_ratio_estimated": 4.53
+      "current_assets": 3.6,
+      "non_current_assets": 2.82,
+      "current_liabilities": 3.23,
+      "non_current_liabilities": -2.17,
+      "operating_profit": 5.88,
+      "net_income": 2.44,
+      "current_ratio": 0.35,
+      "debt_to_equity_ratio": -4.08,
+      "quick_ratio_estimated": 0.35
     },
     "YoY_percent_changes": {
-      "current_assets": 12.26,
-      "non_current_assets": 4.48,
-      "current_liabilities": 5.00,
-      "non_current_liabilities": 4.78,
-      "operating_profit": 8.70,
-      "net_income": 7.67,
-      "current_ratio": 7.36,
-      "debt_to_equity_ratio": -6.25,
-      "quick_ratio_estimated": 7.36
+      "current_assets": 10.37,
+      "non_current_assets": 5.53,
+      "current_liabilities": 10.34,
+      "non_current_liabilities": 2.27,
+      "operating_profit": 17.39,
+      "net_income": 10.53,
+      "current_ratio": 0.0,
+      "debt_to_equity_ratio": -6.0,
+      "quick_ratio_estimated": 0.0
     }
   },
   "financial_insights": [
-    "Microsoft's liquidity improved quarter-over-quarter with a current ratio rise from 2.65 to 2.77, indicating stronger short-term financial stability.",
-    "The debt-to-equity ratio decreased slightly QoQ and YoY reflecting a modest reduction in leverage, which enhances financial safety.",
-    "Operating profit and net income showed solid growth both QoQ and YoY, evidencing effective cost management and revenue growth.",
-    "Current and non-current assets increased steadily, supporting company expansion and investment in long-term assets.",
-    "Slight increases in current and non-current liabilities parallel asset growth but remain controlled relative to equity.",
-    "Quick ratio estimated equal to current ratio due to lack of inventory data, still indicating strong immediate liquidity.",
-    "Overall, Microsoft demonstrates robust financial health with improving profitability and controlled leverage trends on both short-term and long-term bases."
+    "The current ratio remained stable quarter-over-quarter and year-over-year, indicating consistent short-term liquidity.",
+    "Current assets increased notably both QoQ and YoY, driven by business expansion and asset growth.",
+    "Operating profit grew 5.88% QoQ and a substantial 17.39% YoY, reflecting improved operational efficiency and revenue growth.",
+    "Net income showed steady improvement, aligned with operating profit trends, supporting strong profitability.",
+    "The debt-to-equity ratio decreased QoQ and YoY, suggesting the company is moderately reducing leverage and strengthening its equity base.",
+    "Quick ratio estimated equals current ratio due to lack of inventory data and assumption that inventory is minimal or prepaid expenses are negligible.",
+    "Overall, Microsoft shows solid liquidity, improving profitability, and prudent liability management over the periods analyzed."
   ]
 }

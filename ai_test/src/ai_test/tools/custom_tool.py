@@ -1,19 +1,23 @@
 from crewai.tools import BaseTool
 from typing import Type
 from pydantic import BaseModel, Field
-
+from .dart_tool import collect_financial_data
+import json
 
 class MyCustomToolInput(BaseModel):
     """Input schema for MyCustomTool."""
     argument: str = Field(..., description="Description of the argument.")
 
 class MyCustomTool(BaseTool):
-    name: str = "Name of my tool"
+    name: str = "기업 재무정보 수집 도구"
     description: str = (
-        "Clear description for what this tool is useful for, your agent will need this information to use it."
+        "입력된 회사명을 기준으로 OpenDART에서 재무 정보를 조회합니다. "
+        "분기별 유동자산, 부채, 매출, 순이익 등의 데이터를 제공합니다."
     )
-    args_schema: Type[BaseModel] = MyCustomToolInput
 
-    def _run(self, argument: str) -> str:
-        # Implementation goes here
-        return "this is an example of a tool output, ignore it and move along."
+    def _run(self, company_name: str) -> str:
+        try:
+            data = collect_financial_data(company_name)
+            return json.dumps(data, ensure_ascii=False, indent=2)
+        except Exception as e:
+            return f"[오류] {company_name} 재무정보 수집 실패: {str(e)}"

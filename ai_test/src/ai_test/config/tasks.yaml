@@ -1,17 +1,41 @@
 research_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
+    Conduct a thorough research about {topic}.
+    Make sure you find any interesting and relevant non-financial information given
     the current year is {current_year}.
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
+    A list of 5-10 bullet points summarizing the most relevant general information about '{topic}'.
+    This output should focus on company overview, business activities, recent news (non-financial), etc.
   agent: researcher
+
+financial_task: 
+  description: >
+    Given the company name '{company_name}', determine if it is a Korean company based on the 'is_korean' input ('{is_korean}').
+
+    If '{is_korean}' is 'true' (meaning it's a Korean company):
+    Collect its financial data for the latest quarter, the previous quarter, and the same quarter of the previous year
+    using the 'Financial Data Collector' tool. After collecting the data,
+    compare the financial performance across these three periods. Focus on key metrics such as 'revenue',
+    'operating_income', 'net_income', 'amount_asset', and 'amount_bet'.
+    Analyze trends, significant changes, and provide insights into the company's financial health and performance over time.
+    Present the comparison clearly and highlight any notable observations.
+
+    If '{is_korean}' is 'false' (meaning it's NOT a Korean company):
+    State clearly that the financial analysis is not applicable as the company is not Korean, and the 'Financial Data Collector' tool is for Korean companies only. No financial data collection or analysis should be performed.
+  expected_output: >
+    A comprehensive financial analysis report for '{company_name}' comparing the latest quarter, previous quarter, 
+    and previous year's same quarter for key financial metrics (revenue, operating income, net income, total assets, total liabilities), 
+    along with insightful interpretations of the company's financial trends and health. 
+    OR a clear statement that financial analysis is not applicable if '{company_name}' is not a Korean company.
+  agent: financial_analyst
 
 reporting_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Review all the context you got from previous tasks and expand each piece of information (both general and financial)
+    into a full section for a comprehensive report about '{topic}'.
+    Make sure the report is detailed and contains any and all relevant information, including financial insights if applicable.
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
+    A fully fledged, well-structured report about '{topic}' with main topics, 
+    each with a full section of information, including financial analysis if available.
     Formatted as markdown without '```'
   agent: reporting_analyst

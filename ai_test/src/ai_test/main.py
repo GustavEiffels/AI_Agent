@@ -1,68 +1,63 @@
-#!/usr/bin/env python
+# app.py (or main.py)
 import sys
 import warnings
-
 from datetime import datetime
+import os
+from typing import Dict
 
-from ai_test.crew import AiTest
+from fastapi import FastAPI, HTTPException
+from pydantic import BaseModel, Field # Pydantic BaseModel과 Field 임포트
+from ai_test.crew import AiTest 
+from dotenv import load_dotenv
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+warnings.filterwarnings("ignore", category=DeprecationWarning, module="pydantic")
 
-# This main file is intended to be a way for you to run your
-# crew locally, so refrain from adding unnecessary logic into this file.
-# Replace with inputs you want to test with, it will automatically
-# interpolate any tasks and agents information
 
-def run():
+load_dotenv()
+
+app = FastAPI(
+    title="AI Financial Analysis Crew",
+    description="API for running a CrewAI agent to perform financial analysis of Korean companies.",
+    version="1.0.0",
+)
+
+# Pydantic 모델 정의: 요청 본문의 구조를 명시합니다.
+class FinancialAnalysisRequest(BaseModel):
+    topic: str = Field(..., example="삼성전자", description="The general topic for research (e.g., company name).")
+    company_name: str = Field(..., example="삼성전자", description="The specific company name for financial analysis.")
+    is_korean: bool = Field(..., example=True, description="True if the company is Korean, False otherwise.")
+
+@app.post("/run") 
+async def run_crew(request: FinancialAnalysisRequest) -> Dict: 
     """
-    Run the crew.
+    Triggers the AI Crew to perform general research and financial analysis for a specified company.
+    If the company is Korean, it will attempt to fetch DART financial data.
     """
+    company_name = request.company_name
+    topic = request.topic
+    is_korean_str = 'true' if request.is_korean else 'false' 
+
     inputs = {
-        'topic': '에스비티글로벌',
-        'current_year': str(datetime.now().year)
+        'topic': topic,
+        'company_name': company_name,
+        'is_korean': is_korean_str,
+        'current_year': str(datetime.now().year) 
     }
-    
+
+
     try:
-        AiTest().crew().kickoff(inputs=inputs)
+        crew_instance = AiTest()
+        
+        result = crew_instance.crew().kickoff(inputs=inputs)
+        
+        return {"status": "success", "company_name": company_name, "analysis_report": result}
     except Exception as e:
-        raise Exception(f"An error occurred while running the crew: {e}")
+        import traceback
+        traceback.print_exc()
+        raise HTTPException(status_code=500, detail=f"An error occurred while running the crew: {e}")
 
-
-def train():
-    """
-    Train the crew for a given number of iterations.
-    """
-    inputs = {
-        "topic": "에스비티글로벌",
-        'current_year': str(datetime.now().year)
-    }
-    try:
-        AiTest().crew().train(n_iterations=int(sys.argv[1]), filename=sys.argv[2], inputs=inputs)
-
-    except Exception as e:
-        raise Exception(f"An error occurred while training the crew: {e}")
-
-def replay():
-    """
-    Replay the crew execution from a specific task.
-    """
-    try:
-        AiTest().crew().replay(task_id=sys.argv[1])
-
-    except Exception as e:
-        raise Exception(f"An error occurred while replaying the crew: {e}")
-
-def test():
-    """
-    Test the crew execution and returns the results.
-    """
-    inputs = {
-        "topic": "AI LLMs",
-        "current_year": str(datetime.now().year)
-    }
-    
-    try:
-        AiTest().crew().test(n_iterations=int(sys.argv[1]), eval_llm=sys.argv[2], inputs=inputs)
-
-    except Exception as e:
-        raise Exception(f"An error occurred while testing the crew: {e}")
+# Basic root endpoint
+@app.get("/")
+async def read_root():
+    return {"message": "Welcome to the AI Financial Analysis Crew API!"}

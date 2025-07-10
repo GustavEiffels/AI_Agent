@@ -36,7 +36,6 @@ class CrewAiDemo():
     def strategist(self) -> Agent:
         return Agent(
             config=self.agents_config['strategist'], # type: ignore[index]
-            # tools=[SerperDevTool()],
             verbose=True
         )
 
