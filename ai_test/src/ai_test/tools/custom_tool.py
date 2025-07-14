@@ -1,7 +1,6 @@
 from crewai.tools import BaseTool
 from typing import Type
 from pydantic import BaseModel, Field
-from .dart_tool import collect_financial_data
 import json
 
 class MyCustomToolInput(BaseModel):

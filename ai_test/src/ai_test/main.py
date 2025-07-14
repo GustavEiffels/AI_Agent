@@ -1,19 +1,15 @@
 # app.py (or main.py)
-import sys
 import warnings
 from datetime import datetime
-import os
 from typing import Dict
-
 from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel, Field # Pydantic BaseModel과 Field 임포트
-from ai_test.crew import AiTest 
+from pydantic import BaseModel, Field
+from ai_test.crew import AiTest
 from dotenv import load_dotenv
 import ai_test.tools.dart_tool as dart
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="pydantic")
-
 
 load_dotenv()
 
@@ -40,7 +36,6 @@ async def run_crew(request: FinancialAnalysisRequest) -> Dict:
         print(f'result : {result}')
         if result['exist'] == False:
             return {"status": "fail", "company_name": company_name, "message": result['message']}
-
 
 
     inputs = {

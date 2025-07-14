@@ -18,27 +18,24 @@ def get_financial_quarters_info(current_date=None):
     current_month = current_date.month
     current_day = current_date.day
 
-    # Define DART quarter codes and their corresponding info strings
-    # '11013': 1st Quarter, '11012': 2nd Quarter, '11014': 3rd Quarter, '11011': 4th Quarter (Annual)
     quarter_codes = {
-        1: {'code': '11013', 'info_suffix': '1분기', 'cutoff_month': 5, 'cutoff_day': 15}, # 1분기 보고서 제출 마감 (5월 15일)
-        2: {'code': '11012', 'info_suffix': '2분기', 'cutoff_month': 8, 'cutoff_day': 14}, # 2분기 보고서 제출 마감 (8월 14일)
-        3: {'code': '11014', 'info_suffix': '3분기', 'cutoff_month': 11, 'cutoff_day': 14},# 3분기 보고서 제출 마감 (11월 14일)
-        4: {'code': '11011', 'info_suffix': '4분기', 'cutoff_month': 3, 'cutoff_day': 31}  # 연간(4분기) 보고서 제출 마감 (3월 31일, 실제로는 90일이므로 3월 말)
+        1: {'code': '11013', 'info_suffix': '1분기', 'cutoff_month': 5, 'cutoff_day': 15}, 
+        2: {'code': '11012', 'info_suffix': '2분기', 'cutoff_month': 8, 'cutoff_day': 14}, 
+        3: {'code': '11014', 'info_suffix': '3분기', 'cutoff_month': 11, 'cutoff_day': 14},
+        4: {'code': '11011', 'info_suffix': '4분기', 'cutoff_month': 3, 'cutoff_day': 31}  
     }
 
     latest_available_q_num = 0
-    if (current_month > 5) or (current_month == 5 and current_day >= 15): # After 1st quarter report submission (May 15)
+    if (current_month > 5) or (current_month == 5 and current_day >= 15): 
         latest_available_q_num = 1
-    if (current_month > 8) or (current_month == 8 and current_day >= 14): # After 2nd quarter report submission (Aug 14)
+    if (current_month > 8) or (current_month == 8 and current_day >= 14): 
         latest_available_q_num = 2
-    if (current_month > 11) or (current_month == 11 and current_day >= 14): # After 3rd quarter report submission (Nov 14)
+    if (current_month > 11) or (current_month == 11 and current_day >= 14): 
         latest_available_q_num = 3
     if (current_month < 5): 
         if (current_month == 1 and current_day <= 15):
             pass
-        latest_available_q_num = 4 # Refers to the 4th quarter of the *previous* year
-
+        latest_available_q_num = 4 
 
     financial_quarters = []
 
@@ -201,9 +198,7 @@ if __name__ == "__main__":
     if not os.getenv("DART_KEY"):
         print("Warning: DART_KEY 환경 변수가 설정되지 않았습니다. 테스트를 위해 .env 파일을 확인하거나 직접 설정하세요.")
 
-
     financial_tool = CollectFinancialDataTool()
-
     test_company_name = input("테스트할 한국 기업 이름을 입력하세요 (예: 삼성전자): ")
 
     print(f"\nCollecting financial data for: {test_company_name}")

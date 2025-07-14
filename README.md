@@ -125,3 +125,116 @@ Account의 고객명 ( 기업 이름 )을 사용합니다.
 ```commandline
 uvicorn src.crew_ai_demo.main:app --reload --host 0.0.0.0 --port 8000
 ```
+```mermaid
+erDiagram
+
+  Member ||--o{ Order : places
+  Member ||--o{ MemberRole : has
+  Role ||--o{ MemberRole : assigned_to
+
+  Order ||--o{ OrderLineItem : contains
+  ProductVariant ||--o{ OrderLineItem : part_of
+
+  Product ||--o{ ProductOption : has
+  ProductOption ||--o{ ProductOptionValue : has
+  Product ||--o{ ProductVariant : defines
+  ProductVariant ||--o{ ProductVariantOption : composed_of
+  ProductOptionValue ||--o{ ProductVariantOption : used_in
+
+  ProductVariant ||--o{ PriceBookEntry : priced_by
+  PriceBook ||--o{ PriceBookEntry : contains
+
+  Product }o--|| Category : belongs_to
+  Category ||--o{ Category : parent_of
+
+  %% Entity Definitions
+  Member {
+    int Id PK
+    string email
+    string password
+    string nick
+    string refresh_token
+  }
+
+  Role {
+    int Id PK
+    string title
+    string authority
+  }
+
+  MemberRole {
+    int Id PK
+    int member_id FK
+    int role_id FK
+  }
+
+  Order {
+    int Id PK
+    int member_id FK
+    float total_amount
+    datetime order_date
+    string shipping_address
+  }
+
+  OrderLineItem {
+    int Id PK
+    int order_id FK
+    int product_variant_id FK
+    int quantity
+    float price_at_time_of_order
+  }
+
+  Product {
+    int Id PK
+    string title
+    string description
+    int category_id FK
+  }
+
+  Category {
+    int Id PK
+    string title
+    int parent_id FK
+    int layer
+  }
+
+  ProductOption {
+    int Id PK
+    int product_id FK
+    string name
+  }
+
+  ProductOptionValue {
+    int Id PK
+    int product_option_id FK
+    string value
+  }
+
+  ProductVariant {
+    int Id PK
+    int product_id FK
+    string sku
+    int inventory_quantity
+    string image_url
+    float price_adjustment
+  }
+
+  ProductVariantOption {
+    int Id PK
+    int product_variant_id FK
+    int product_option_value_id FK
+  }
+
+  PriceBook {
+    int Id PK
+    string title
+  }
+
+  PriceBookEntry {
+    int Id PK
+    int pricebook_id FK
+    int product_variant_id FK
+    float price
+  }
+
+```

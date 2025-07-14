@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>AI&lowbar;Agent</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="ai_agent">AI_Agent</h1>
+<h1 id="work">Work</h1>
+<h2 id="-2025-07-08">✅ 2025-07-08</h2>
+<ul class="contains-task-list">
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> 1. CREWAI 설치 및 실행</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> 2. AGENT 추가 : 보고서 한글 번역 AGENT 추가</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> 3. FAST API 추가 : 동적으로 CREWAI 를 호출하기 위해 Fast API 적용 ( 리팩토링 필요 )</li>
+<li class="task-list-item enabled"><input class="task-list-item-checkbox" checked=""type="checkbox"> 4. CREWAI 를 활용한 프로젝트 아이디어 추가</li>
+</ul>
+<p><strong>1. CREWAI 설치 및 실행</strong>
+<img src="file:///c:\Users\SIUK\AI_Agent\image-1.png" alt="alt text"></p>
+<p><strong>2. AGENT 추가</strong></p>
+<p><strong>agents.yaml</strong></p>
+<pre><code class="language-yaml"><span class="hljs-attr">translator:</span>
+  <span class="hljs-attr">role:</span> <span class="hljs-string">&gt;
+    Korean Translator
+</span>  <span class="hljs-attr">goal:</span> <span class="hljs-string">&gt;
+    Translate all results and reports from previous agents into Korean.
+</span>  <span class="hljs-attr">backstory:</span> <span class="hljs-string">&gt;
+    You are a translation expert with an excellent ability to accurately and
+    naturally convert given English text into Korean. You are known for
+    perfectly capturing all technical terms and nuances in your translations.
+</span></code></pre>
+<p><strong>tasks.yaml</strong></p>
+<pre><code class="language-yaml"><span class="hljs-attr">translation_task:</span>
+  <span class="hljs-attr">description:</span> <span class="hljs-string">&gt;
+    Translate the entire report provided into natural and accurate Korean.
+    Ensure all sections, headings, and details are translated while maintaining
+    the original meaning and nuance, especially for technical terms.
+    The translated report should be ready for presentation.
+</span>  <span class="hljs-attr">expected_output:</span> <span class="hljs-string">&gt;
+    A fully translated report in Korean, formatted as markdown.
+</span>  <span class="hljs-attr">agent:</span> <span class="hljs-string">translator</span> 
+</code></pre>
+<p><strong><a href="http://crew.py">crew.py</a></strong></p>
+<pre><code class="language-python"><span class="hljs-meta">    @agent</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">translator</span>(<span class="hljs-params">self</span>) -&gt; Agent:
+        <span class="hljs-keyword">return</span> Agent(
+            config=self.agents_config[<span class="hljs-string">&#x27;translator&#x27;</span>], <span class="hljs-comment"># type: ignore[index]</span>
+            verbose=<span class="hljs-literal">True</span>
+        )
+
+...
+<span class="hljs-meta">    @task</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">translation_task</span>(<span class="hljs-params">self</span>) -&gt; Task:
+        <span class="hljs-keyword">return</span> Task(
+            config=self.tasks_config[<span class="hljs-string">&#x27;translation_task&#x27;</span>], <span class="hljs-comment"># type: ignore[index]</span>
+            output_file=<span class="hljs-string">&#x27;report_korean.md&#x27;</span>, <span class="hljs-comment"># 번역된 파일 저장 경로</span>
+            context=[self.reporting_task()] <span class="hljs-comment"># reporting_task의 결과를 translation_task의 컨텍스트로 전달</span>
+        )
+
+...
+<span class="hljs-meta">    @crew</span>
+    <span class="hljs-keyword">def</span> <span class="hljs-title function_">crew</span>(<span class="hljs-params">self</span>) -&gt; Crew:
+        <span class="hljs-string">&quot;&quot;&quot;Creates the CrewAiDemo crew&quot;&quot;&quot;</span>
+        <span class="hljs-comment"># To learn how to add knowledge sources to your crew, check out the documentation:</span>
+        <span class="hljs-comment"># https://docs.crewai.com/concepts/knowledge#what-is-knowledge</span>
+
+        <span class="hljs-keyword">return</span> Crew(
+            agents=self.agents, <span class="hljs-comment"># Automatically created by the @agent decorator</span>
+            tasks=[
+                self.research_task(),
+                self.reporting_task(),
+                self.translation_task() <span class="hljs-comment"># &lt;-- translation_task를 태스크 파이프라인에 추가</span>
+            ],
+            process=Process.sequential,
+            verbose=<span class="hljs-literal">True</span>,
+            <span class="hljs-comment"># process=Process.hierarchical, # In case you wanna use that instead https://docs.crewai.com/how-to/Hierarchical/</span>
+        )
+
+
+</code></pre>
+<p><strong>3. FAST API 추가</strong>
+<img src="file:///c:\Users\SIUK\AI_Agent\image.png" alt="alt text"></p>
+<p><strong>4. CREWAI 를 활용한 프로젝트 아이디어 추가</strong></p>
+<pre><code>Account의 고객명 ( 기업 이름 )을 사용합니다.
+1. 제무제표 분석 결과 ( 저번 분기 대비, 전년 동일 분기 대비 ) 
+2. 최신 뉴스 요약 및 뉴스 URL 
+3. 동종 업계 비교  
+
+해당 정보들을 가공하여 제공합니다.
+</code></pre>
+<hr>
+<h2 id="setting">SETTING</h2>
+<p><strong>가상화 설정</strong></p>
+<blockquote>
+<pre><code>py -3.10 -m venv venv // -3.10 은 설치된 파이썬 버전, 두번째 venv : 가상머신 이름
+</code></pre>
+</blockquote>
+<p><strong>가상화 실행 ( 가상 머신이 적용된 디렉토리에서 )</strong></p>
+<blockquote>
+<pre><code>.\venv\Scripts\activate 혹은 .\venv\Scripts\Activate.ps1
+</code></pre>
+</blockquote>
+<h3 id="crew-ai-operate">CREW AI OPERATE</h3>
+<blockquote>
+<pre><code>crewai install
+crewai run
+</code></pre>
+</blockquote>
+<h3 id="app-operate">APP OPERATE</h3>
+<pre><code class="language-commandline">uvicorn src.crew_ai_demo.main:app --reload --host 0.0.0.0 --port 8000
+</code></pre>
+<pre><code>erDiagram
+    MEMBER ||--o{ MEMBER_ROLE : &quot;has&quot;
+    MEMBER ||--o{ ORDER : &quot;places&quot;
+
+    ROLE ||--o{ MEMBER_ROLE : &quot;assigned to&quot;
+
+    MEMBER_ROLE {
+        int Id PK
+        int member_id FK
+        int role_id FK
+    }
+
+    MEMBER {
+        int Id PK
+        string email
+        string password
+        string nick
+        string refresh_token
+    }
+
+    ROLE {
+        int Id PK
+        string title
+        string authority
+    }
+
+    ORDER ||--o{ ORDER_LINE_ITEM : &quot;contains&quot;
+    MEMBER ||--o{ ORDER : &quot;placed_by&quot;
+
+    ORDER {
+        int Id PK
+        int member_id FK
+        decimal total_amount
+        datetime order_date
+        string shipping_address
+    }
+
+    ORDER_LINE_ITEM {
+        int Id PK
+        int order_id FK
+        int product_variant_id FK
+        int quantity
+        decimal price_at_time_of_order
+    }
+
+    PRODUCT ||--o{ PRODUCT_OPTION : &quot;has&quot;
+    PRODUCT ||--o{ PRODUCT_VARIANT : &quot;has&quot;
+    PRODUCT ||--o{ CATEGORY : &quot;belongs_to&quot;  // Product.category_id refers to Category.Id
+
+    PRODUCT {
+        int Id PK
+        string title
+        string description
+        int category_id FK
+    }
+
+    CATEGORY ||--o{ CATEGORY : &quot;has_parent&quot; // Self-referencing for parent_id
+    CATEGORY ||--o{ PRODUCT : &quot;contains&quot; // Category contains many products
+
+    CATEGORY {
+        int Id PK
+        string title
+        int parent_id FK
+        int layer
+    }
+
+    PRODUCT_OPTION ||--o{ PRODUCT_OPTION_VALUE : &quot;defines&quot;
+
+    PRODUCT_OPTION {
+        int Id PK
+        int product_id FK
+        string name
+    }
+
+    PRODUCT_OPTION_VALUE ||--o{ PRODUCT_VARIANT_OPTION : &quot;used_in&quot;
+
+    PRODUCT_OPTION_VALUE {
+        int Id PK
+        int product_option_id FK
+        string value
+    }
+
+    PRODUCT_VARIANT ||--o{ PRODUCT_VARIANT_OPTION : &quot;is_composed_of&quot;
+    PRODUCT_VARIANT ||--o{ ORDER_LINE_ITEM : &quot;ordered&quot;
+    PRODUCT_VARIANT ||--o{ PRICE_BOOK_ENTRY : &quot;has_price&quot;
+
+    PRODUCT_VARIANT {
+        int Id PK
+        int product_id FK
+        string sku UNIQUE
+        int inventory_quantity
+        string image_url
+        decimal price_adjustment
+    }
+
+    PRODUCT_VARIANT_OPTION {
+        int Id PK
+        int product_variant_id FK
+        int product_option_value_id FK
+    }
+
+    PRICE_BOOK ||--o{ PRICE_BOOK_ENTRY : &quot;defines&quot;
+
+    PRICE_BOOK {
+        int Id PK
+        string title
+    }
+
+    PRICE_BOOK_ENTRY {
+        int Id PK
+        decimal price
+        int pricebook_id FK
+        int product_variant_id FK
+    }
+</code></pre>
+
+            
+            
+        </body>
+        </html>

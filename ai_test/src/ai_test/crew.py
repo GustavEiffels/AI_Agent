@@ -1,19 +1,24 @@
 # crew.py
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task # project 모듈에서 필요한 것들을 임포트
-from crewai.agents.agent_builder.base_agent import BaseAgent
-from .tools.dart_tool import CollectFinancialDataTool 
-from typing import List
+from .tools.dart_tool import CollectFinancialDataTool
+from .tools.naver_tool import NaverSearchDataTool
 
 @CrewBase
 class AiTest():
     """AiTest crew"""
+    agents_config = 'config/agents.yaml' # agents.yaml 파일 경로
+    tasks_config = 'config/tasks.yaml'   # tasks.yaml 파일 경로
+
 
     @agent 
     def researcher(self) -> Agent:
         return Agent(
             config=self.agents_config['researcher'], 
-            verbose=True
+            verbose=True,
+            tools=[
+                NaverSearchDataTool()
+            ]
         )
 
     @agent
@@ -57,8 +62,6 @@ class AiTest():
 
     @crew
     def crew(self) -> Crew:
-        """Creates the CrewAiDemo comprehensive business analysis crew"""
-
         return Crew(
             agents=[
                 self.researcher(),

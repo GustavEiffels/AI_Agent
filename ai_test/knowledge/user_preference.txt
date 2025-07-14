@@ -1,4 +1,3 @@
-User name is John Doe.
-User is an AI Engineer.
-User is interested in AI Agents.
-User is based in San Francisco, California.
+User name is SUNG SEOUK FROM SOUTH KOREA.
+User is an Salesforce & Back-End Programmer.
+User is working on 에스비티글로벌 that is South Korea IT Company.
