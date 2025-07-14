@@ -11,10 +11,11 @@ class AiTest():
     tasks_config = 'config/tasks.yaml'   # tasks.yaml 파일 경로
 
 
-    @agent 
+
+    @agent
     def researcher(self) -> Agent:
         return Agent(
-            config=self.agents_config['researcher'], 
+            config=self.agents_config['researcher'],
             verbose=True,
             tools=[
                 NaverSearchDataTool()
@@ -23,12 +24,13 @@ class AiTest():
 
     @agent
     def financial_analyst(self) -> Agent:
+        pass
         return Agent(
-            config=self.agents_config['financial_analyst'], 
+            config=self.agents_config['financial_analyst'],
             verbose=True,
             tools=[
                 CollectFinancialDataTool()
-            ]            
+            ]
         )
 
     @agent
@@ -43,7 +45,7 @@ class AiTest():
         return Task(
             config=self.tasks_config['research_task'],
             output_file='research_resport.md'
-            
+
         )
 
     @task
@@ -51,14 +53,14 @@ class AiTest():
         return Task(
             config=self.tasks_config['financial_task'],
             output_file='financial_task.md'
-        ) 
+        )
 
     @task
     def reporting_task(self) -> Task:
         return Task(
             config=self.tasks_config['reporting_task'],
             output_file='reporting_task.md'
-        ) 
+        )
 
     @crew
     def crew(self) -> Crew:

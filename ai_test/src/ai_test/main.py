@@ -48,7 +48,6 @@ async def run_crew(request: FinancialAnalysisRequest) -> Dict:
 
     try:
         crew_instance = AiTest()
-        
         result = crew_instance.crew().kickoff(inputs=inputs)
         
         return {"status": "success", "company_name": company_name, "analysis_report": result}
