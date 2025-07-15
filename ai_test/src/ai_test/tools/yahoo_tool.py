@@ -106,53 +106,75 @@ class YahooFinanceNewsDataTool(BaseTool):
     )
     args_schema: Type[BaseModel] = YahooFinanceDataInput # 티커 심볼을 입력으로 받음
 
-    def _run(self, ticker_symbol: str) -> List[Dict[str, str]]:
+    def _run(self, ticker_symbol: str) -> List[Dict[str, str]]:  # 반환 타입 명확히
         try:
             ticker = yf.Ticker(ticker_symbol)
             all_news_items = ticker.news
 
-            print(f'all_news_items : {all_news_items}')
-
-
             extracted_news = []
             if all_news_items:
                 for i, item in enumerate(all_news_items):
-                    if i >= 3: # 최대 3개 뉴스만 추출
+                    if i >= 3:  # 최신순으로 3개 뉴스만 추출
                         break
 
+                    content_data = item.get('content', {})
 
-                    title = item.get('title', 'N/A')
-                    pub_date_raw = item.get('providerPublishTime')
-                    publish_date = "N/A"
-                    if pub_date_raw:
+                    title = content_data.get('title', item.get('title', 'N/A'))
+
+                    link = content_data.get('canonicalUrl', {}).get('url')
+                    if not link:  # canonicalUrl이 없으면 clickThroughUrl 시도
+                        link = content_data.get('clickThroughUrl', {}).get('url', item.get('link', 'N/A'))
+
+                    description = content_data.get('summary', item.get('summary', 'N/A'))
+
+                    # date, time: item['content']['pubDate'] (ISO 8601 string) 또는 item['providerPublishTime'] (Unix timestamp)
+                    pub_date_iso = content_data.get('pubDate')  # ISO 8601 string (예: "2025-07-14T16:46:18Z")
+                    pub_time_unix = item.get('providerPublishTime')  # Unix timestamp (yfinance 직접 접근 시)
+
+                    publish_date_obj = None
+                    if pub_date_iso:
                         try:
-                            publish_date = datetime.fromtimestamp(pub_date_raw).strftime('%Y-%m-%d')
+                            # ISO 8601 문자열 파싱
+                            publish_date_obj = datetime.fromisoformat(pub_date_iso.replace('Z', '+00:00'))
+                        except ValueError:
+                            pass
+                    elif pub_time_unix:
+                        try:
+                            # Unix timestamp 파싱
+                            publish_date_obj = datetime.fromtimestamp(pub_time_unix)
                         except (TypeError, ValueError):
-                            publish_date = "Invalid Date Format"
+                            pass
 
-                    source = item.get('publisher', 'N/A')
-                    summary = item.get('summary', 'N/A')
-                    url = item.get('link', 'N/A')
+                    date_str = publish_date_obj.strftime('%Y-%m-%d') if publish_date_obj else "N/A"
+                    time_str = publish_date_obj.strftime('%H:%M') if publish_date_obj else "N/A"
 
-                    if not url or url.startswith("N/A"):
-                        url = f"https://finance.yahoo.com/quote/{ticker_symbol}/news"
+                    # source: item['content']['provider']['displayName']
+                    source = content_data.get('provider', {}).get('displayName', 'N/A')
+                    if source == 'N/A':  # provider 정보가 content 안에 없을 경우, 최상위 item에서 publisher 정보 확인
+                        source = item.get('publisher', 'N/A')
+
+
 
                     extracted_news.append({
-                        "date": publish_date.strftime("%Y-%m-%d"),
-                        "time": publish_date.strftime("%H:%M"),
                         "title": title,
-                        "description": summary,
-                        "link": url
+                        "link": link,
+                        "description": description,
+                        "date": date_str,
+                        "time": time_str,
+                        "source": source  # 'source' 필드 추가
                     })
+
                     print(f'extracted_news : {extracted_news}')
             return extracted_news
         except Exception as e:
+            # 오류 발생 시 요청된 형식으로 오류 메시지 반환
             return [{
+                "title": "News Fetch Failed",
+                "link": "N/A",
+                "description": f"Failed to fetch news for {ticker_symbol} using yfinance: {e}. Ensure ticker is correct and publicly traded.",
                 "date": datetime.now().strftime('%Y-%m-%d'),
-                "source": "System Error",
-                "headline": "News Fetch Failed",
-                "summary": f"Failed to fetch news for {ticker_symbol} using yfinance: {e}. Ensure ticker is correct and publicly traded.",
-                "url": "N/A"
+                "time": datetime.now().strftime('%H:%M'),
+                "source": "System Error"  # 'source' 필드 추가
             }]
 
 
