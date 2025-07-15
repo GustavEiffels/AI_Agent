@@ -1,8 +1,9 @@
-- 에스비티글로벌(SBT Global)은 IT 솔루션 전문기업으로, 20년 이상의 업력을 가지고 있으며 IT 분야에서 차별화된 서비스를 제공하고 있다.
-- 2025년 4월 24일부터 26일까지 서울 코엑스에서 열린 ‘2025 월드 IT 쇼(World IT Show 2025)’에 참가하여 최신 IT 기술과 솔루션을 선보였다.
-- 2025년 4월 10일, 에스비티글로벌은 아마존웹서비스(AWS)와 공동으로 'SAP on AWS 비즈니스 혁신 세미나'를 서울 강남 센터필드에서 성공적으로 개최하였으며, 이를 통해 디지털 혁신과 클라우드 기반 비즈니스 전환을 강조하였다.
-- 자체 개발한 ETL 플랫폼 ‘인포랙티브(INFORACTIVE) ETL’이 한국정보통신기술협회(TTA)로부터 GS인증 1등급을 획득하였다. 이 인증은 실제 운영환경에서의 우수한 성능 및 신뢰성을 증명한다.
-- 에스비티글로벌은 클라우드, 디지털 혁신, SAP 시스템 통합 및 IT 인프라 구축 등 다양한 IT 솔루션과 서비스를 제공하여 시장 내 신뢰를 확보하고 있다.
-- 최근 행보를 미루어볼 때, 회사는 디지털 전환 및 클라우드 비즈니스에 중점을 두고 IT 산업 내 입지를 강화하고 있다.
-- 대표는 서병구이며, 기업은 고객 맞춤형 솔루션 제공과 혁신적인 서비스 개발에 주력하고 있다.
-- 에스비티글로벌은 대기업과 공공 부문에 걸쳐 다양한 IT 프로젝트를 수행하며 IT 인프라 스트럭처 강화에도 집중하고 있다.
+- Nvidia Corporation is a leading American technology company primarily known for designing graphics processing units (GPUs) for gaming, professional visualization, data centers, and automotive markets.
+- Nvidia has a strong position in AI and high-performance computing sectors, with its GPUs widely used for AI model training and inference.
+- Recently in 2025, Nvidia launched the HGX B200 platform, a cutting-edge 8U air-cooled server equipped with 8 Nvidia Blackwell GPUs, targeting AI infrastructure needs. This platform combines state-of-the-art GPU and CPU technologies from Intel and AMD to offer powerful AI and HPC capabilities.
+- Nvidia’s Blackwell GPU architecture is currently being adopted in AI infrastructures by major cloud service providers such as AWS, highlighting Nvidia’s expanding role in cloud AI solutions.
+- Nvidia's advanced NVLink technology enables high-bandwidth interconnects between GPUs, facilitating greater computational power and efficiency in AI model training.
+- In mid-2025, the U.S. government lifted restrictions on Nvidia’s sales of AI chips to China, allowing Nvidia to resume these exports with licensing approval. This move potentially renews Nvidia’s opportunities in one of the largest AI markets globally.
+- Nvidia’s GPU platforms and associated technologies are integral to the development and deployment of artificial intelligence systems and support a wide array of industries, from autonomous vehicles to scientific research.
+- Nvidia continues to strengthen its presence in AI and HPC markets not only through hardware innovation but also via software ecosystems including CUDA and AI frameworks.
+- The company remains committed to advancing AI capabilities internationally while navigating geopolitical and regulatory challenges impacting technology exports and collaborations.

@@ -1,7 +1,8 @@
 # app.py (or main.py)
+import json
 import warnings
 from datetime import datetime
-from typing import Dict
+from typing import Dict, Any, Coroutine
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 from ai_test.crew import AiTest
@@ -26,17 +27,18 @@ class FinancialAnalysisRequest(BaseModel):
     is_korean: bool = Field(..., example=True, description="True if the company is Korean, False otherwise.")
 
 @app.post("/run") 
-async def run_crew(request: FinancialAnalysisRequest) -> Dict: 
+async def run_crew(request: FinancialAnalysisRequest) -> dict[str, str | Any] | str:
     company_name = request.company_name
     topic = request.topic
-    is_korean_str = 'true' if request.is_korean else 'false' 
+    is_korean_str = request.is_korean
+
+    print(f'is_korean_str : {is_korean_str}')
 
     if is_korean_str:
         result = dart.company_name_exist(request.company_name)
         print(f'result : {result}')
-        if result['exist'] == False:
+        if not result['exist']:
             return {"status": "fail", "company_name": company_name, "message": result['message']}
-
 
     inputs = {
         'topic': topic,
@@ -45,12 +47,13 @@ async def run_crew(request: FinancialAnalysisRequest) -> Dict:
         'current_year': str(datetime.now().year) 
     }
 
-
     try:
         crew_instance = AiTest()
         result = crew_instance.crew().kickoff(inputs=inputs)
-        
-        return {"status": "success", "company_name": company_name, "analysis_report": result}
+
+        final_json_output = json.loads(result.raw)
+
+        return {"status": "success", "company_name": company_name, "analysis_result": final_json_output}
     except Exception as e:
         import traceback
         traceback.print_exc()

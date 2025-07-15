@@ -1,29 +1,31 @@
-from typing import Type
+import json
+from typing import Type, Any
 
-from datetime import datetime, timedelta
+from crewai.tools import BaseTool
 from pydantic import BaseModel, Field
 import yfinance as yf
 import pandas as pd
 
 class YahooFinanceDataInput(BaseModel):
-    company_name:str = Field(..., description='조회할 기업의 정확한 이름')
+    ticker_symbol:str = Field(..., description='조회할 해외 기업의 ticker')
 
-class YahooFinanceDataTool(BaseModel):
+class YahooFinanceDataTool(BaseTool):
     name: str = "Collect Financial Datad"
     description: str =(
         "Retrieve a company's financial data using its ticker symbol"
     )
     args_schema: Type[BaseModel] = YahooFinanceDataInput
 
-    def _run(self, ticker: str) -> dict:
-        company = yf.Ticker(ticker)
+    def _run(self, ticker_symbol: str) -> dict[str, str | dict[Any, Any]] | str:
+        print(f'ticker_symbol : {ticker_symbol}')
+        company = yf.Ticker(ticker_symbol)
 
         quarterly_income_statement = company.quarterly_financials
         quarterly_balance_sheet = company.quarterly_balance_sheet
 
         if quarterly_income_statement.empty or quarterly_balance_sheet.empty:
             return {
-                "company_name": ticker,
+                "company_name": ticker_symbol,
                 "financial_data_by_quarter": {},
                 "error": "Financial data (income statement or balance sheet) not available for this ticker."
             }
@@ -86,13 +88,13 @@ class YahooFinanceDataTool(BaseModel):
             financial_data_by_quarter[quarter_str] = quarter_data
 
         result = {
-            "company_name": company.info.get('longName', ticker),
+            "company_name": company.info.get('longName', ticker_symbol),
             "financial_data_by_quarter": financial_data_by_quarter
         }
 
         print(f'result : {result}')
 
-        return result
+        return json.dumps(result, ensure_ascii=False)
 
 
 if __name__ == '__main__':

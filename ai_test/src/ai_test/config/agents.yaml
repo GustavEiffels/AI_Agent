@@ -6,7 +6,6 @@ researcher:
     tasked with collecting business overviews, industry positions,
     and any recent news.
   allow_delegation: false
-
 financial_analyst:
   role: 'Expert Financial Analyst'
   goal: >

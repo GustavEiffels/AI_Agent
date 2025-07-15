@@ -8,76 +8,123 @@ research_task:
     This output should focus on company overview, business activities, recent news (non-financial), etc.
   agent: researcher
 
-financial_task: 
+financial_task:
   description: >
-    Given the company name '{company_name}', determine if it is a Korean company based on the 'is_korean' input ('{is_korean}').
+    **Objective:** Conduct a comprehensive financial analysis for '{company_name}' based on its origin (Korean or International).
 
-    If '{is_korean}' is 'true' (meaning it's a Korean company):
-    Collect its financial data for approximately the last two years (all available quarters within this period)
-    using the 'Dart Financial Data Collector' tool. After collecting the data,
-    perform a comprehensive time-series analysis of key financial metrics including 'revenue',
-    'operating_income', 'net_income', 'asset_moveable' (유동자산), 'asset_unmoveable' (비유동자산),
-    'bet_moveable' (유동부채), 'bet_unmoveable' (비유동부채), 'amount_asset' (자본총계), and 'amount_bet' (부채총계).
-    
-    Analyze trends, significant changes, and inter-relationships between these metrics over the entire two-year period.
-    Based on this analysis, derive a **forward-looking financial outlook (전망)** for the company,
-    identifying potential future performance and risks.
-    
-    The final output should be a structured JSON object containing:
-    1. A summary of the financial data collected for each quarter.
-    2. Key trends identified for each metric.
-    3. Derived financial outlook/prospects with reasoning.
-    4. Any identified risks or opportunities.
+    **Step 1: Determine Company Type & Ticker Acquisition**
+    Based on the 'is_korean' input ('{is_korean}'), perform the following:
+    - IF '{is_korean}' is 'true' (meaning it's a Korean company):
+      - **DO NOT** attempt to find a ticker. Assume the company name itself is sufficient for the 'CollectFinancialDataTool' (or if a specific ticker is implicitly understood for Korean companies, state that).
+      - Directly proceed to collecting financial data using the 'CollectFinancialDataTool'.
+    - IF '{is_korean}' is 'false' (meaning it's NOT a Korean company):
+      - **FIRST**, you **MUST** use the 'Serper API for Search Ticker by Company Name' tool (via its description: "This tool utilizes the Serper API to search for the stock ticker symbol of companies, specifically focusing on international enterprises. It aims to find the precise ticker symbol for a given company name.") with '{company_name}' to find its stock ticker symbol.
+      - **CRITICAL**: If the 'Serper API for Search Ticker by Company Name' tool successfully returns a ticker, use this ticker. If it returns 'No clear ticker found for {company_name} in search results.' or any other error/not-found message, explicitly state that the ticker could not be found for '{company_name}'.
+      - **THEN**, if a valid ticker was found, proceed to collecting financial data using the 'Collect Financial Datad' (YahooFinanceDataTool) tool with the found ticker.
+      - If no valid ticker was found, **DO NOT** attempt to collect financial data; state that analysis is not possible.
 
-    If '{is_korean}' is 'false' (meaning it's NOT a Korean company):
-    State clearly that the financial analysis is not applicable as the company is not Korean, and the 'CollectFinancialDataTool' tool is for Korean companies only. No financial data collection or analysis should be performed.
-    The output should be a JSON object indicating the reason for non-applicability.
+    **Step 2: Financial Data Collection & Analysis (Conditional)**
+    - IF it's a Korean company (from Step 1):
+      - Collect its financial data for approximately the last two years (all available quarters within this period) using the 'CollectFinancialDataTool'.
+      - Perform a comprehensive time-series analysis of key financial metrics including 'revenue', 'operating_income', 'net_income', 'asset_moveable' (유동자산), 'asset_unmoveable' (비유동자산), 'bet_moveable' (유동부채), 'bet_unmoveable' (비유동부채), 'amount_asset' (자본총계 - Should be Total Stockholder Equity), and 'amount_bet' (부채총계 - Should be Total Liabilities).
+      - Analyze trends, significant changes, and inter-relationships between these metrics over the entire two-year period.
+      - Based on this analysis, derive a **forward-looking financial outlook (전망)** for the company, identifying potential future performance and risks.
+    - IF it's an International company AND a valid ticker was found (from Step 1):
+      - Collect its financial data for approximately the last two years (all available quarters within this period) using the 'Collect Financial Datad' (YahooFinanceDataTool) tool.
+      - Perform a comprehensive time-series analysis of key financial metrics as specified for Korean companies (revenue, operating_income, net_income, Current Assets, Non Current Assets, Current Liabilities, Non Current Liabilities, Total Assets, Total Liabilities, Total Stockholder Equity - adjust names as per Yahoo Finance data).
+      - Analyze trends, significant changes, and inter-relationships between these metrics over the entire two-year period.
+      - Based on this analysis, derive a **forward-looking financial outlook (전망)** for the company, identifying potential future performance and risks.
+    - IF it's an International company AND no valid ticker was found (from Step 1):
+      - **STOP** the analysis and state that financial analysis is not applicable due to the inability to find a valid ticker.
+
+    **Step 3: Final Output Generation**
+    The final output should be a structured JSON object.
+
+    If analysis was performed (Korean or International with valid ticker), the JSON should include:
+    ```json
+    {
+      "company_name": "{company_name}",
+      "financial_data_by_quarter": {
+        "YYYY_Q1": {
+          "revenue": ...,
+          "operating_income": ...,
+          "net_income": ...,
+          "asset_moveable": ...,
+          "asset_unmoveable": ...,
+          "amount_asset": ...,
+          "bet_moveable": ...,
+          "bet_unmoveable": ...,
+          "amount_bet": ...,
+          "amount_asset_equity": ...
+        },
+        // ... for approximately the last two years (all available quarters within that period)
+      },
+      "key_trends": {
+        "revenue_trend": "...",
+        "operating_income_trend": "...",
+        "net_income_trend": "...",
+        "asset_liability_structure_trend": "...",
+        "cash_flow_outlook_trend": "...", # Optional, if cash flow is analyzed
+        // ... other relevant trends
+      },
+      "financial_outlook": "...",
+      "risks_and_opportunities": [
+        "Risk 1",
+        "Opportunity 1"
+      ]
+    }
+    ```
+    If financial analysis was NOT applicable (international company with no valid ticker), the JSON should be:
+    ```json
+    {
+      "company_name": "{company_name}",
+      "status": "Financial analysis not applicable",
+      "reason": "Could not find a valid stock ticker for this international company."
+    }
+    ```
   expected_output: |
-      A structured JSON object representing the comprehensive financial analysis.
-      
-      If it's a Korean company, the JSON should include:
-      ```json
-      {
-        "company_name": "{company_name}",
-        "financial_data_by_quarter": {
-          "YYYY_Q1": { ... },
-          "YYYY_Q2": { ... },
-          "YYYY_Q3": { ... },
-          "YYYY_Q4": { ... }
-          // ... for approximately the last two years
-        },
-        "key_trends": {
-          "revenue_trend": "...",
-          "operating_income_trend": "...",
-          "net_income_trend": "...",
-          "asset_liability_structure_trend": "...",
-          // ... other relevant trends
-        },
-        "financial_outlook": "...",
-        "risks_and_opportunities": [
-          "Risk 1",
-          "Opportunity 1"
-        ]
-      }
-      ```
-      If it's NOT a Korean company, the JSON should be:
-      ```json
-      {
-        "company_name": "{company_name}",
-        "status": "Financial analysis not applicable",
-        "reason": "This tool is exclusively for Korean companies."
-      }
-      ```
+      A structured JSON object representing the comprehensive financial analysis,
+      or an object indicating non-applicability due to missing ticker for international companies.
   agent: financial_analyst
   output_file: financial_analysis_{company_name}.json
 
 reporting_task:
   description: >
-    Review all the context you got from previous tasks and expand each piece of information (both general and financial)
-    into a full section for a comprehensive report about '{topic}'.
-    Make sure the report is detailed and contains any and all relevant information, including financial insights if applicable.
-  expected_output: >
-    A fully fledged, well-structured report about '{topic}' with main topics, 
-    each with a full section of information, including financial analysis if available.
-    Formatted as markdown without '```'
+    Review all the context provided from previous tasks to synthesize a comprehensive report about '{topic}'.
+    Specifically, you will receive two main pieces of context:
+    1.  **General Research Context:** The output from 'research_task' (a list of bullet points summarizing general company information).
+    2.  **Financial Analysis Context:** The output from 'financial_task' (a structured JSON object containing detailed financial data and analysis).
+    
+    Your primary goal is to integrate all this information into a single, cohesive, comprehensive report,
+    strictly adhering to the `ComprehensiveReportOutput` Pydantic schema for the final JSON output.
+    
+    **CRITICAL: All content within the JSON fields (e.g., company_overview, trends, outlook) MUST be written in Korean.**
+    
+    Fill in all the following fields within the final JSON object. Ensure each field is populated with meaningful Korean content,
+    drawing insights from BOTH the General Research Context and the Financial Analysis Context.
+    DO NOT leave any field empty or null if information is available or can be reasonably inferred.
+    
+    - **company_overview**: 기업의 사업, 산업, 주요 활동에 대한 간결한 요약을 제공합니다. (General Research Context에서 주요 정보 추출)
+    - **latest_trends_and_strategy**: 가장 최근의 중요한 개발 사항, 시장 동향 및 전략적 이니셔티브를 자세히 설명합니다. (General Research Context와 Financial Analysis Context 모두 활용)
+    - **business_direction**: 동향 및 전략을 바탕으로, 회사의 미래 전략적 초점, 주요 성장 영역 및 장기 비전을 명확히 설명합니다. (General Research Context와 Financial Analysis Context 모두 활용)
+    
+    - **detailed_financial_analysis**: **Financial Analysis Context에서 제공된 JSON 객체 내용을 여기에 그대로 복사합니다.** 이는 'financial_task'의 모든 상세 분석 결과를 담고 있어야 합니다.
+    
+    - **financial_performance_and_analysis**: 회사의 재무 건전성, 지난 약 2년간의 성과 및 제공된 데이터에서 도출된 주요 재무 하이라이트에 대한 전반적인 분석을 제공합니다. (주로 'detailed_financial_analysis'의 요약 부분 활용)
+    - **revenue_and_profitability_trends**: 총 매출, 영업이익, 순이익의 추세를 분석하고, 성장률, 마진, 수익성에 영향을 미치는 요인을 상세한 재무 데이터를 기반으로 논합니다. ('detailed_financial_analysis'의 'financial_data_by_quarter' 및 'key_trends' 활용)
+    - **asset_and_liability_structure**: 유동/비유동 자산 및 부채의 구성과 추세를 상세히 설명하고, 유동성, 지급 능력 및 부채 관리를 분석합니다. ('detailed_financial_analysis'의 'financial_data_by_quarter' 및 'key_trends' 활용)
+    - **financial_outlook_and_cash_flow**: 미래 재무 전망(전망)을 제시하고, 회사의 현금 흐름 창출 및 활용을 분석합니다. ('detailed_financial_analysis'의 'financial_outlook' 활용)
+    - **risks_and_opportunities**: 이 필드는 두 개의 중첩된 JSON 객체('risks', 'opportunities')를 포함해야 합니다. ('detailed_financial_analysis'의 'risks_and_opportunities' 리스트를 활용하여 설명 형태로 전환)
+      - **risks**: 주요 잠재적 위험 요인에 대한 상세한 설명을 제공합니다.
+      - **opportunities**: 주요 잠재적 기회 요인에 대한 상세한 설명을 제공합니다.
+    - **social_responsibility_and_contribution**: 기업의 사회적 책임(CSR) 및 사회 공헌 활동에 대한 노력과 이니셔티브를 설명합니다. (General Research Context에서 관련 정보 추출)
+    - **conclusion**: 전체적인 분석 결과를 요약하고, 회사의 미래 전망에 대한 최종 평가를 제공합니다. (모든 컨텍스트를 통합하여 결론 도출)
+
+    **IMPORTANT:** If the 'financial_task' output indicates that financial analysis was NOT applicable (i.e., it contains `{"status": "Financial analysis not applicable", ...}`), then you **MUST** populate only the 'company_name', 'status', and 'reason' fields in the output JSON. In this specific case, all other fields (including `detailed_financial_analysis`) should be set to `null` or an empty string as per the Pydantic schema's allowance for optional/default values, reflecting that financial analysis could not be completed.
+
+    **Output ONLY the JSON object. Do not include any conversational text, markdown fences (```json), or other extraneous information.**
+
+  expected_output: |
+      A structured JSON object representing the comprehensive report, strictly adhering to the `ComprehensiveReportOutput` Pydantic model.
+      This report synthesizes all available information, including detailed financial analysis from preceding tasks. All content within the JSON fields MUST be in Korean.
   agent: reporting_analyst

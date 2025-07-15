@@ -1,6 +1,7 @@
 from typing import Type
+
+from crewai.tools import BaseTool
 from dotenv import load_dotenv
-from litellm.llms.custom_httpx.httpx_handler import headers
 from pydantic import BaseModel, Field
 load_dotenv()
 import os,requests
@@ -10,7 +11,7 @@ class SearchTickerDataInput(BaseModel):
     company_name: str = Field(..., description='조회할 기업의 정확한 이름')
 
 
-class SearchTickerDataTool(BaseModel):
+class SearchTickerDataTool(BaseTool):
     name: str = "Serper API for Search Ticker by Company Name"
     description: str = (
         "This tool utilizes the Serper API to search for the stock ticker symbol of companies, "

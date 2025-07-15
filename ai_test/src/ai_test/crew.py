@@ -1,16 +1,14 @@
-# crew.py
 from crewai import Agent, Crew, Process, Task
-from crewai.project import CrewBase, agent, crew, task # project 모듈에서 필요한 것들을 임포트
+from crewai.project import CrewBase, agent, crew, task, output_pydantic
 from .tools.dart_tool import CollectFinancialDataTool
 from .tools.naver_tool import NaverSearchDataTool
+from .tools.yahoo_tool import YahooFinanceDataTool
+from .tools.goolge_search_tool import GoogleSearchTickerTool
 
 @CrewBase
 class AiTest():
-    """AiTest crew"""
-    agents_config = 'config/agents.yaml' # agents.yaml 파일 경로
-    tasks_config = 'config/tasks.yaml'   # tasks.yaml 파일 경로
-
-
+    agents_config = 'config/agents.yaml'
+    tasks_config = 'config/tasks.yaml'
 
     @agent
     def researcher(self) -> Agent:
@@ -29,14 +27,16 @@ class AiTest():
             config=self.agents_config['financial_analyst'],
             verbose=True,
             tools=[
-                CollectFinancialDataTool()
+                CollectFinancialDataTool(),
+                GoogleSearchTickerTool(),
+                YahooFinanceDataTool()
             ]
         )
 
     @agent
     def reporting_analyst(self) -> Agent:
         return Agent(
-            config=self.agents_config['reporting_analyst'], # type: ignore[index]
+            config=self.agents_config['reporting_analyst'],
             verbose=True
         )
 
@@ -45,7 +45,6 @@ class AiTest():
         return Task(
             config=self.tasks_config['research_task'],
             output_file='research_resport.md'
-
         )
 
     @task
@@ -59,7 +58,7 @@ class AiTest():
     def reporting_task(self) -> Task:
         return Task(
             config=self.tasks_config['reporting_task'],
-            output_file='reporting_task.md'
+            output_file='comprehensive_report_{topic}.json',
         )
 
     @crew
