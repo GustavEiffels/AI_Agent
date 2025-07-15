@@ -1,5 +1,6 @@
 import json
-from typing import Type, Any
+from datetime import datetime
+from typing import Type, Any, List, Dict
 
 from crewai.tools import BaseTool
 from pydantic import BaseModel, Field
@@ -96,11 +97,71 @@ class YahooFinanceDataTool(BaseTool):
 
         return json.dumps(result, ensure_ascii=False)
 
+class YahooFinanceNewsDataTool(BaseTool):
+    name: str = "Collect FinanceNews" # 툴 이름 (Task description에서 사용)
+    description: str =(
+        "Getting Financial News by Company Name using Yahoo Finance API. "
+        "It fetches recent news articles for a given ticker symbol and provides their date, source, headline, summary, and URL. "
+        "Outputs a list of up to 5 news items."
+    )
+    args_schema: Type[BaseModel] = YahooFinanceDataInput # 티커 심볼을 입력으로 받음
+
+    def _run(self, ticker_symbol: str) -> List[Dict[str, str]]:
+        try:
+            ticker = yf.Ticker(ticker_symbol)
+            all_news_items = ticker.news
+
+            print(f'all_news_items : {all_news_items}')
+
+
+            extracted_news = []
+            if all_news_items:
+                for i, item in enumerate(all_news_items):
+                    if i >= 3: # 최대 3개 뉴스만 추출
+                        break
+
+
+                    title = item.get('title', 'N/A')
+                    pub_date_raw = item.get('providerPublishTime')
+                    publish_date = "N/A"
+                    if pub_date_raw:
+                        try:
+                            publish_date = datetime.fromtimestamp(pub_date_raw).strftime('%Y-%m-%d')
+                        except (TypeError, ValueError):
+                            publish_date = "Invalid Date Format"
+
+                    source = item.get('publisher', 'N/A')
+                    summary = item.get('summary', 'N/A')
+                    url = item.get('link', 'N/A')
+
+                    if not url or url.startswith("N/A"):
+                        url = f"https://finance.yahoo.com/quote/{ticker_symbol}/news"
+
+                    extracted_news.append({
+                        "date": publish_date.strftime("%Y-%m-%d"),
+                        "time": publish_date.strftime("%H:%M"),
+                        "title": title,
+                        "description": summary,
+                        "link": url
+                    })
+                    print(f'extracted_news : {extracted_news}')
+            return extracted_news
+        except Exception as e:
+            return [{
+                "date": datetime.now().strftime('%Y-%m-%d'),
+                "source": "System Error",
+                "headline": "News Fetch Failed",
+                "summary": f"Failed to fetch news for {ticker_symbol} using yfinance: {e}. Ensure ticker is correct and publicly traded.",
+                "url": "N/A"
+            }]
+
 
 if __name__ == '__main__':
 
-    yahoo_tool = YahooFinanceDataTool()
+    # yahoo_tool = YahooFinanceDataTool()
+    yahoo_tool = YahooFinanceNewsDataTool()
+
     ticker_name = input("테스트할 기업의 ticker 를 입력해라 : ")
-    yahoo_tool_result = yahoo_tool._run(ticker_name)
+    yahoo_tool_result = yahoo_tool._run(ticker_symbol=ticker_name)
 
 

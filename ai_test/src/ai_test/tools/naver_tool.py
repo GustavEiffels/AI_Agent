@@ -61,3 +61,11 @@ class NaverSearchDataTool(BaseTool):
         except requests.exceptions.Timeout:
             print("요청 시간 초과")
 
+if __name__ == '__main__':
+
+    company_name = input('국내 회사 이름을 입력해라 : ')
+    result = NaverSearchDataTool()._run(company_name=company_name)
+
+    print(f'result : {result}')
+
+

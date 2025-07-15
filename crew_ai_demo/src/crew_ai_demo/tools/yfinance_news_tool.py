@@ -10,14 +10,10 @@ class YFinanceNewsTool(BaseTool):
     description: str = "Fetches the three most recent news articles for a publicly traded company using its stock ticker from Yahoo Finance. Input should be the company's stock ticker (e.g., 'TSLA', 'NVDA')."
 
     def _run(self, ticker_symbol: str) -> List[Dict[str, str]]:
-        """
-        Yahoo Finance에서 특정 기업 티커의 최신 뉴스 3개를 가져옵니다.
-        ticker_symbol: 야후 파이낸스에서 사용하는 기업 티커 (예: 'TSLA', 'NVDA')
-        반환: 각 뉴스 항목의 'date', 'source', 'headline', 'summary', 'url'을 포함하는 딕셔너리 리스트.
-        """
         try:
             ticker = yf.Ticker(ticker_symbol)
             all_news_items = ticker.news
+
 
             extracted_news = []
             if all_news_items:
