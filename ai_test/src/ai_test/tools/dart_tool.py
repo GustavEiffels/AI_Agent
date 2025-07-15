@@ -9,7 +9,6 @@ import OpenDartReader
 from datetime import datetime
 from io import BytesIO
 from dateutil.relativedelta import relativedelta
-import base64
 load_dotenv()
 import xml.etree.cElementTree as ET
 import re
@@ -298,7 +297,6 @@ def parse_financial_data_from_html_like_xml(xml_content: str) -> dict:
                                 else:
                                     if jeongi_amount is not None:
                                         parsed_data[item_key] = jeongi_amount
-
                                 break
 
     except ET.ParseError as e:
