@@ -1,7 +1,11 @@
-- 디엔솔루션즈(DN Solutions)는 한국 기반의 기술 및 제조업체로, 베트남 시장 확장을 위해 2024년에 호치민에 현지법인 '디엔솔루션즈비나(DN Solutions Vina)'를 설립했다.
-- 2025년 7월 베트남 최대 공작기계전시회에 처음 참가하여 자사의 신제품과 기술력을 현지 고객 및 파트너들에게 소개하며 해외 시장 진출에 적극적인 모습을 보이고 있다.
-- 회사는 제조업 디지털 전환 및 업무 자동화 분야에서 두각을 나타내며, 국내외 다양한 기업과 협업하여 혁신 사례를 공유하고 있다. 특히 디지털 기반 경쟁력 확보를 위한 전략을 중점 추진 중이다.
-- 2025년 6월 기준, 부천시에 위치한 첨단기술연구소가 소사·대장·종합운동장역 중심 균형발전 프로젝트에 포함되어 있어, 지역 첨단기술 연구개발 허브 역할을 수행하고 있다.
-- 디엔솔루션즈는 지역사회 및 산업 발전 측면에서 대한항공 등과 함께 다양한 연구개발 사업에 참여하며 산업 생태계 내 중요 파트너로 자리잡고 있다.
-- 회사 내 주요 인력 및 책임자들이 다양한 산업 현장과 기술 혁신 사례 발표에 참여하여, 산업 리더십과 기술 전문성을 꾸준히 강화하고 있다.
-- 최근 기사에서는 디엔솔루션즈가 첨단제품 개발과 공작기계 분야의 기술력 강화는 물론, 해외시장 개척과 글로벌 네트워크 구축 활동도 활발히 추진 중임을 확인할 수 있다.
+- 에스비티글로벌 (SBT Global) is an IT solutions company led by CEO 서병구, with over 20 years of industry experience, specializing in digital and IT business innovation.  
+- The company recently participated in the 2025 World IT Show held in Seoul COEX from April 24 to 26, showcasing its IT solutions and emphasizing its long-standing expertise and differentiated capabilities in the market.  
+- 에스비티글로벌 hosted a successful 'SAP on AWS Business Innovation Seminar' in partnership with Amazon Web Services (AWS) in April 2025, emphasizing their focus on cloud computing and enterprise resource planning (ERP) digital transformation.  
+- The company has developed its own ETL (Extract, Transform, Load) platform named 'INFOractive ETL,' which secured the highest grade 1 certification (GS인증 1등급) from the Korean Information and Communication Technology Association (TTA). This certification validates the platform’s reliability and operational readiness in real production environments, thus boosting market trust.  
+- Their business activities mainly focus on IT solution development, digital innovation, cloud services integration, and enterprise system optimization, with a strong emphasis on partnerships with key players like AWS to drive technology adoption in Korea.  
+- 에스비티글로벌 shows commitment to continuous innovation and strengthening its product competitiveness by investing in proprietary technology platforms and participating in major industry exhibitions and seminars.  
+- The company is navigating industry challenges such as operational cost management and aims to convert its strong sales growth into sustainable profitability while enhancing operational efficiency.  
+- 에스비티글로벌 is actively building its market position as a trusted IT solutions provider within Korean and regional IT sectors by leveraging technological expertise and certification achievements.  
+- Their recent activities underline a strategic focus on expanding digital innovation capabilities and increasing presence in cloud and enterprise IT infrastructure domains.
+
+This overview highlights 에스비티글로벌’s non-financial strengths, business focus, recent initiatives, and industry positioning as of 2025.

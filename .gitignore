@@ -1,3 +1,10 @@
 **/venv
 __pycache__/
 .idea/
+**       finance_insert_info = {
+            'collection_name':'finance_collection',
+            'company_name':f'{company_name}',
+            'category':'finance',
+            'current_month':f'{current_month_year}',
+            'finance_info':f'{final_json_output}'
+        }/mongodb/mongo_data_local
