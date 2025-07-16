@@ -1,13 +1,24 @@
 research_task:
   description: >
-    Conduct a thorough research about {topic}.
-    Make sure you find any interesting and relevant non-financial information given
-    the current year is {current_year}.
-  expected_output: >
-    A list of 5-10 bullet points summarizing the most relevant general information about '{topic}'.
-    This output should focus on company overview, business activities, recent news (non-financial), etc.
-  agent: researcher
+    **Objective:** Conduct a thorough research about {topic}, focusing exclusively on non-financial information.
 
+    **Step 1: Determine Research Sources Based on Company Origin**
+    Based on the 'is_korean' input ('{is_korean}'), perform the following:
+    - IF '{is_korean}' is 'true' (meaning it's a Korean company):
+      - **ONLY** use the 'Naver Search Tool' (or equivalent Korean search tool) to gather information. Prioritize Korean-specific business and industry data.
+    - IF '{is_korean}' is 'false' (meaning it's NOT a Korean company):
+      - Use **BOTH** the 'Naver Search Tool' (for any relevant Korean mentions or insights) and a general 'International Search Tool' (like Google Search) to gather comprehensive information. Prioritize international business, industry, and market data.
+
+    **Step 2: Information Gathering**
+    Make sure you find any interesting and relevant non-financial information given
+    the current year is {current_year}. This includes company overview, business activities,
+    industry position, major developments, and any recent general non-financial news (e.g., product launches, partnerships, leadership changes, CSR activities, etc.).
+    **DO NOT** focus on financial results, stock prices, or market capitalizations.
+
+  expected_output: >
+    A list of 5-10 bullet points summarizing the most relevant general and non-financial information about '{topic}'.
+    This output should focus on company overview, business activities, recent non-financial news, etc.
+  agent: researcher
 financial_task:
   description: >
     **Objective:** Conduct a comprehensive financial analysis for '{company_name}' based on its origin (Korean or International).
@@ -88,28 +99,68 @@ financial_task:
   agent: financial_analyst
   output_file: financial_analysis_{company_name}.json
 
+news_collection_task:
+  description: >
+    **Objective:** Collect the latest 5-10 relevant news articles about '{topic}'.
+
+    **Step 1: Determine News Sources Based on Company Origin**
+    Based on the 'is_korean' input ('{is_korean}'), perform the following:
+    - IF '{is_korean}' is 'true' (meaning it's a Korean company):
+      - **ONLY** use the 'Naver News Tool' to collect news.
+    - IF '{is_korean}' is 'false' (meaning it's NOT a Korean company):
+      - Use **BOTH** the 'Naver News Tool' and the 'Yahoo News Tool' to collect news, prioritizing relevant international sources from Yahoo.
+
+    **Step 2: News Collection and Summarization**
+    - Collect approximately 5-10 recent and relevant news articles.
+    - For each article, extract its publication date, source name, headline, a brief (2-3 sentence) summary, and the URL.
+    - Ensure the summaries are concise and capture the main points of the article.
+  expected_output: >
+    A list of dictionaries, where each dictionary represents a news article
+    and contains 'date', 'source', 'headline', 'summary', and 'url' fields.
+    For example:
+    ```json
+    [
+      {
+        "date": "2024-07-15",
+        "source": "네이버 뉴스",
+        "headline": "ABC 기업, 신기술 개발로 시장 선도",
+        "summary": "ABC 기업이 최근 혁신적인 신기술을 발표하며 관련 시장에서 독보적인 위치를 확보하고 있습니다. 이는 생산성 향상과 비용 절감에 크게 기여할 것으로 예상됩니다. 주요 경쟁사들도 ABC 기업의 움직임을 주시하고 있습니다.",
+        "url": "[http://news.naver.com/article/123](http://news.naver.com/article/123)"
+      },
+      {
+        "date": "2024-07-14",
+        "source": "Yahoo Finance",
+        "headline": "XYZ Corp. Reports Strong Q2 Earnings",
+        "summary": "XYZ Corporation announced better-than-expected earnings for the second quarter, driven by robust sales in its international markets. The company's stock price saw a significant surge following the announcement. Analysts are optimistic about its future growth trajectory.",
+        "url": "[http://finance.yahoo.com/news/article/456](http://finance.yahoo.com/news/article/456)"
+      }
+    ]
+    ```
+  agent: news_collector
+
 reporting_task:
   description: >
     Review all the context provided from previous tasks to synthesize a comprehensive report about '{topic}'.
-    Specifically, you will receive two main pieces of context:
+    Specifically, you will receive three main pieces of context: # <--- 여기서 2개에서 3개로 변경
     1.  **General Research Context:** The output from 'research_task' (a list of bullet points summarizing general company information).
     2.  **Financial Analysis Context:** The output from 'financial_task' (a structured JSON object containing detailed financial data and analysis).
-    
+    3.  **News Articles Context:** The output from 'news_collection_task' (a list of summarized news articles in the format: {"date": ..., "source": ..., "headline": ..., "summary": ..., "url": ...}). # <--- 뉴스 컨텍스트 추가
+
     Your primary goal is to integrate all this information into a single, cohesive, comprehensive report,
     strictly adhering to the `ComprehensiveReportOutput` Pydantic schema for the final JSON output.
-    
+
     **CRITICAL: All content within the JSON fields (e.g., company_overview, trends, outlook) MUST be written in Korean.**
-    
+
     Fill in all the following fields within the final JSON object. Ensure each field is populated with meaningful Korean content,
-    drawing insights from BOTH the General Research Context and the Financial Analysis Context.
+    drawing insights from BOTH the General Research Context, the Financial Analysis Context, AND the News Articles Context. # <--- 뉴스 컨텍스트 활용 명시
     DO NOT leave any field empty or null if information is available or can be reasonably inferred.
-    
+
     - **company_overview**: 기업의 사업, 산업, 주요 활동에 대한 간결한 요약을 제공합니다. (General Research Context에서 주요 정보 추출)
-    - **latest_trends_and_strategy**: 가장 최근의 중요한 개발 사항, 시장 동향 및 전략적 이니셔티브를 자세히 설명합니다. (General Research Context와 Financial Analysis Context 모두 활용)
-    - **business_direction**: 동향 및 전략을 바탕으로, 회사의 미래 전략적 초점, 주요 성장 영역 및 장기 비전을 명확히 설명합니다. (General Research Context와 Financial Analysis Context 모두 활용)
-    
+    - **latest_trends_and_strategy**: 가장 최근의 중요한 개발 사항, 시장 동향 및 전략적 이니셔티브를 자세히 설명합니다. (General Research Context, Financial Analysis Context, 그리고 News Articles Context 모두 활용)
+    - **business_direction**: 동향 및 전략을 바탕으로, 회사의 미래 전략적 초점, 주요 성장 영역 및 장기 비전을 명확히 설명합니다. (General Research Context, Financial Analysis Context, 그리고 News Articles Context 모두 활용)
+
     - **detailed_financial_analysis**: **Financial Analysis Context에서 제공된 JSON 객체 내용을 여기에 그대로 복사합니다.** 이는 'financial_task'의 모든 상세 분석 결과를 담고 있어야 합니다.
-    
+
     - **financial_performance_and_analysis**: 회사의 재무 건전성, 지난 약 2년간의 성과 및 제공된 데이터에서 도출된 주요 재무 하이라이트에 대한 전반적인 분석을 제공합니다. (주로 'detailed_financial_analysis'의 요약 부분 활용)
     - **revenue_and_profitability_trends**: 총 매출, 영업이익, 순이익의 추세를 분석하고, 성장률, 마진, 수익성에 영향을 미치는 요인을 상세한 재무 데이터를 기반으로 논합니다. ('detailed_financial_analysis'의 'financial_data_by_quarter' 및 'key_trends' 활용)
     - **asset_and_liability_structure**: 유동/비유동 자산 및 부채의 구성과 추세를 상세히 설명하고, 유동성, 지급 능력 및 부채 관리를 분석합니다. ('detailed_financial_analysis'의 'financial_data_by_quarter' 및 'key_trends' 활용)
@@ -118,13 +169,14 @@ reporting_task:
       - **risks**: 주요 잠재적 위험 요인에 대한 상세한 설명을 제공합니다.
       - **opportunities**: 주요 잠재적 기회 요인에 대한 상세한 설명을 제공합니다.
     - **social_responsibility_and_contribution**: 기업의 사회적 책임(CSR) 및 사회 공헌 활동에 대한 노력과 이니셔티브를 설명합니다. (General Research Context에서 관련 정보 추출)
+    - **recent_news**: **뉴스 기사 컨텍스트(News Articles Context)에서 수집된 각 기사를 요약하여 목록 형태로 제공합니다.** 각 기사의 'headline', 'source', 'date', 'url'을 포함하여 간결하게 작성하되, 핵심 요약을 반드시 포함합니다. # <--- 새로 추가된 필드와 사용 지침
     - **conclusion**: 전체적인 분석 결과를 요약하고, 회사의 미래 전망에 대한 최종 평가를 제공합니다. (모든 컨텍스트를 통합하여 결론 도출)
 
-    **IMPORTANT:** If the 'financial_task' output indicates that financial analysis was NOT applicable (i.e., it contains `{"status": "Financial analysis not applicable", ...}`), then you **MUST** populate only the 'company_name', 'status', and 'reason' fields in the output JSON. In this specific case, all other fields (including `detailed_financial_analysis`) should be set to `null` or an empty string as per the Pydantic schema's allowance for optional/default values, reflecting that financial analysis could not be completed.
+    **IMPORTANT:** If the 'financial_task' output indicates that financial analysis was NOT applicable (i.e., it contains `{"status": "Financial analysis not applicable", ...}`), then you **MUST** populate only the 'company_name', 'status', and 'reason' fields in the output JSON. In this specific case, all other fields (including `detailed_financial_analysis` and `recent_news`) should be set to `null` or an empty string as per the Pydantic schema's allowance for optional/default values, reflecting that financial analysis could not be completed.
 
     **Output ONLY the JSON object. Do not include any conversational text, markdown fences (```json), or other extraneous information.**
 
   expected_output: |
       A structured JSON object representing the comprehensive report, strictly adhering to the `ComprehensiveReportOutput` Pydantic model.
-      This report synthesizes all available information, including detailed financial analysis from preceding tasks. All content within the JSON fields MUST be in Korean.
+      This report synthesizes all available information, including detailed financial analysis and recent news from preceding tasks. All content within the JSON fields MUST be in Korean.
   agent: reporting_analyst

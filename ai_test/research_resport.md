@@ -1,9 +1,7 @@
-- Nvidia Corporation is a leading American technology company primarily known for designing graphics processing units (GPUs) for gaming, professional visualization, data centers, and automotive markets.
-- Nvidia has a strong position in AI and high-performance computing sectors, with its GPUs widely used for AI model training and inference.
-- Recently in 2025, Nvidia launched the HGX B200 platform, a cutting-edge 8U air-cooled server equipped with 8 Nvidia Blackwell GPUs, targeting AI infrastructure needs. This platform combines state-of-the-art GPU and CPU technologies from Intel and AMD to offer powerful AI and HPC capabilities.
-- Nvidia’s Blackwell GPU architecture is currently being adopted in AI infrastructures by major cloud service providers such as AWS, highlighting Nvidia’s expanding role in cloud AI solutions.
-- Nvidia's advanced NVLink technology enables high-bandwidth interconnects between GPUs, facilitating greater computational power and efficiency in AI model training.
-- In mid-2025, the U.S. government lifted restrictions on Nvidia’s sales of AI chips to China, allowing Nvidia to resume these exports with licensing approval. This move potentially renews Nvidia’s opportunities in one of the largest AI markets globally.
-- Nvidia’s GPU platforms and associated technologies are integral to the development and deployment of artificial intelligence systems and support a wide array of industries, from autonomous vehicles to scientific research.
-- Nvidia continues to strengthen its presence in AI and HPC markets not only through hardware innovation but also via software ecosystems including CUDA and AI frameworks.
-- The company remains committed to advancing AI capabilities internationally while navigating geopolitical and regulatory challenges impacting technology exports and collaborations.
+- 디엔솔루션즈는 베트남 최대 공작기계전시회에 참가하여 신제품 및 기술력을 선보임으로써 현지 시장 공략과 고객·파트너 접점을 확대하고 있음. 2025년 7월에 호치민에 설립한 법인 DN Solutions Vina를 통해 현지 진출을 강화하고 있음.
+- 디지털 혁신과 협업 자동화를 추구하며, 에노비아, 넷바이브 등과 협업하여 업무 현장에 디지털 기반 경쟁력 확보 전략을 도입, 다양한 산업 분야에서 혁신 사례를 공유하고 있음.
+- 부천시의 균형 발전 프로젝트 내 첨단기술연구소 입주를 통해 SK이노베이션 에너지 효율화 연구소, 대한항공 항공안전 연구개발센터와 함께 R&D 거점으로 자리잡고 있음. 이 사업은 총 사업비 약 1조 2,000억 원에 달하는 대규모 개발 프로젝트임.
+- 첨단기술 연구개소 설립과 현지 법인 설립 등으로 글로벌 사업 확장 및 첨단 제조업 분야에서의 기술 경쟁력 확보에 중점을 두고 있음.
+- 주요 산업 영역은 공작기계, 첨단 제조 기술, 에너지 효율화, 그리고 항공 안전 연구개발 등으로 다변화되는 추세임.
+- 2025년에 진행한 베트남 전시회 참가와 협업 사례 발표는 디엔솔루션즈가 기술 혁신과 글로벌 네트워크 확장에 적극적인 기업임을 보여주는 중요한 활동임.
+- 이은주 책임매니저 등 임직원들이 디지털 전환 및 업무 혁신 사례 발표를 통해 내부 역량 강화와 대외 홍보에도 힘쓰고 있음.

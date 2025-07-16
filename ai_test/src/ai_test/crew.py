@@ -2,7 +2,7 @@ from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task, output_pydantic
 from .tools.dart_tool import CollectFinancialDataTool
 from .tools.naver_tool import NaverSearchDataTool
-from .tools.yahoo_tool import YahooFinanceDataTool
+from .tools.yahoo_tool import YahooFinanceDataTool, YahooFinanceNewsDataTool
 from .tools.goolge_search_tool import GoogleSearchTickerTool
 
 @CrewBase
@@ -16,7 +16,9 @@ class AiTest():
             config=self.agents_config['researcher'],
             verbose=True,
             tools=[
-                NaverSearchDataTool()
+                NaverSearchDataTool(),
+                GoogleSearchTickerTool(),
+                YahooFinanceNewsDataTool()
             ]
         )
 
@@ -30,6 +32,18 @@ class AiTest():
                 CollectFinancialDataTool(),
                 GoogleSearchTickerTool(),
                 YahooFinanceDataTool()
+            ]
+        )
+
+    @agent
+    def news_collector(self) -> Agent:
+        pass
+        return Agent(
+            config=self.agents_config['news_collector'],
+            verbose=True,
+            tools=[
+                NaverSearchDataTool(),
+                YahooFinanceNewsDataTool()
             ]
         )
 
@@ -55,6 +69,13 @@ class AiTest():
         )
 
     @task
+    def news_collection_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['news_collection_task'],
+            output_file='news_[company_name].md'
+        )
+
+    @task
     def reporting_task(self) -> Task:
         return Task(
             config=self.tasks_config['reporting_task'],
@@ -67,11 +88,13 @@ class AiTest():
             agents=[
                 self.researcher(),
                 self.financial_analyst(),
+                self.news_collector(),
                 self.reporting_analyst()
             ],
             tasks=[
                 self.research_task(),
                 self.financial_task(),
+                self.news_collection_task(),
                 self.reporting_task()
             ],
             process=Process.sequential,

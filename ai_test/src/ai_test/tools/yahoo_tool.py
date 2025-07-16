@@ -98,15 +98,15 @@ class YahooFinanceDataTool(BaseTool):
         return json.dumps(result, ensure_ascii=False)
 
 class YahooFinanceNewsDataTool(BaseTool):
-    name: str = "Collect FinanceNews" # 툴 이름 (Task description에서 사용)
+    name: str = "Collect FinanceNews"
     description: str =(
         "Getting Financial News by Company Name using Yahoo Finance API. "
         "It fetches recent news articles for a given ticker symbol and provides their date, source, headline, summary, and URL. "
         "Outputs a list of up to 5 news items."
     )
-    args_schema: Type[BaseModel] = YahooFinanceDataInput # 티커 심볼을 입력으로 받음
+    args_schema: Type[BaseModel] = YahooFinanceDataInput
 
-    def _run(self, ticker_symbol: str) -> List[Dict[str, str]]:  # 반환 타입 명확히
+    def _run(self, ticker_symbol: str) -> List[Dict[str, str]]:
         try:
             ticker = yf.Ticker(ticker_symbol)
             all_news_items = ticker.news
@@ -114,7 +114,7 @@ class YahooFinanceNewsDataTool(BaseTool):
             extracted_news = []
             if all_news_items:
                 for i, item in enumerate(all_news_items):
-                    if i >= 3:  # 최신순으로 3개 뉴스만 추출
+                    if i >= 3:
                         break
 
                     content_data = item.get('content', {})
@@ -180,7 +180,6 @@ class YahooFinanceNewsDataTool(BaseTool):
 
 if __name__ == '__main__':
 
-    # yahoo_tool = YahooFinanceDataTool()
     yahoo_tool = YahooFinanceNewsDataTool()
 
     ticker_name = input("테스트할 기업의 ticker 를 입력해라 : ")

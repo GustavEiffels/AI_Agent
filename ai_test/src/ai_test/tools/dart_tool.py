@@ -228,6 +228,12 @@ class CollectFinancialDataTool(BaseTool):
                             xml_content = zf.read(xml_file_name).decode('utf-8')
                             result_json[date] = parse_financial_data_from_html_like_xml(xml_content)
 
+                            save_directory = "."
+                            os.makedirs(save_directory, exist_ok=True)
+                            save_path = os.path.join(save_directory, xml_file_name)
+                            with open(save_path, 'w', encoding='utf-8') as f:
+                                f.write(xml_content)
+
         print(f'result_json : {result_json}')
         return result_json
 
