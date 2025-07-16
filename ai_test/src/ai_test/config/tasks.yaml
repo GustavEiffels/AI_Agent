@@ -19,63 +19,180 @@ research_task:
     A list of 5-10 bullet points summarizing the most relevant general and non-financial information about '{topic}'.
     This output should focus on company overview, business activities, recent non-financial news, etc.
   agent: researcher
-financial_task:
-  description: >
-    **Objective:** Conduct a comprehensive financial analysis for '{company_name}' based on its origin (Korean or International).
+# config/tasks.yaml
+
+# 🔹 1. Financial Data Collection Task (기존 financial_task에서 데이터 수집 부분 담당)
+#    - Agent: financial_analyst
+#    - Input: {company_name}, {is_korean}
+#    - Output:
+#        - 성공: {"status": "data_collected", "data": {...}}
+#        - 한국 기업이며 OpenDartReader 실패 시: {"status": "file_downloaded_needs_parsing", "file_path": "..."}
+#        - 외국 기업이며 ticker 못 찾은 경우: {"status": "ticker_not_found", "company_name": "..."}
+#        - 외국 기업이며 YahooFinanceDataTool 성공 시: {"status": "data_collected", "data": {...}}
+
+financial_data_collection_task:
+  description: |
+    **Objective:** Collect raw financial data for '{company_name}' based on its origin (Korean or International).
 
     **Step 1: Determine Company Type & Ticker Acquisition**
     Based on the 'is_korean' input ('{is_korean}'), perform the following:
     - IF '{is_korean}' is 'true' (meaning it's a Korean company):
-      - **DO NOT** attempt to find a ticker. Assume the company name itself is sufficient for the 'CollectFinancialDataTool' (or if a specific ticker is implicitly understood for Korean companies, state that).
-      - Directly proceed to collecting financial data using the 'CollectFinancialDataTool'.
+      - **DO NOT** attempt to find a ticker.
+      - Proceed to collecting financial data using the 'Collect Financial Data' tool (CollectFinancialDataTool). This tool will attempt to use OpenDartReader. If OpenDartReader fails, it will download an XML file and return its path.
     - IF '{is_korean}' is 'false' (meaning it's NOT a Korean company):
-      - **FIRST**, you **MUST** use the 'Serper API for Search Ticker by Company Name' tool (via its description: "This tool utilizes the Serper API to search for the stock ticker symbol of companies, specifically focusing on international enterprises. It aims to find the precise ticker symbol for a given company name.") with '{company_name}' to find its stock ticker symbol.
-      - **CRITICAL**: If the 'Serper API for Search Ticker by Company Name' tool successfully returns a ticker, use this ticker. If it returns 'No clear ticker found for {company_name} in search results.' or any other error/not-found message, explicitly state that the ticker could not be found for '{company_name}'.
-      - **THEN**, if a valid ticker was found, proceed to collecting financial data using the 'Collect Financial Datad' (YahooFinanceDataTool) tool with the found ticker.
-      - If no valid ticker was found, **DO NOT** attempt to collect financial data; state that analysis is not possible.
+      - **FIRST**, you **MUST** use the 'Google Search Ticker' tool to find its stock ticker symbol for '{company_name}'.
+      - **CRITICAL**: If the 'Google Search Ticker' tool successfully returns a ticker, use this ticker. If it returns 'No clear ticker found for {company_name} in search results.' or any other error/not-found message, explicitly state that the ticker could not be found for '{company_name}'.
+      - **THEN**, if a valid ticker was found, proceed to collecting financial data using the 'Collect Financial Data from Yahoo Finance' tool (YahooFinanceDataTool) with the found ticker.
+      - If no valid ticker was found, **DO NOT** attempt to collect financial data.
+      
+    **Step 2: Output Formatting**
+    Return a structured JSON object indicating the result of the data collection.
+    - If data was collected successfully (either Korean via OpenDartReader or International via YahooFinanceDataTool), return:
+      ```json
+      {
+        "status": "data_collected",
+        "data": { ... collected financial data ... }
+      }
+      ```
+    - If it's a Korean company and 'Collect Financial Data' tool downloaded an XML file for parsing, return:
+      ```json
+      {
+        "status": "file_downloaded_needs_parsing",
+        "file_path": "path/to/downloaded_xml_file.xml"
+      }
+      ```
+    - If it's an International company and no valid ticker was found, return:
+      ```json
+      {
+        "status": "ticker_not_found",
+        "company_name": "{company_name}",
+        "reason": "Could not find a valid stock ticker for this international company."
+      }
+      ```
+  expected_output: |
+    A JSON object indicating the status of data collection: either successfully collected financial data, 
+    a file path requiring parsing, or a notification that a ticker was not found.
+  agent: financial_analyst
 
-    **Step 2: Financial Data Collection & Analysis (Conditional)**
-    - IF it's a Korean company (from Step 1):
-      - Collect its financial data for approximately the last two years (all available quarters within this period) using the 'CollectFinancialDataTool'.
-      - Perform a comprehensive time-series analysis of key financial metrics including 'revenue', 'operating_income', 'net_income', 'asset_moveable' (유동자산), 'asset_unmoveable' (비유동자산), 'bet_moveable' (유동부채), 'bet_unmoveable' (비유동부채), 'amount_asset' (자본총계 - Should be Total Stockholder Equity), and 'amount_bet' (부채총계 - Should be Total Liabilities).
-      - Analyze trends, significant changes, and inter-relationships between these metrics over the entire two-year period.
-      - Based on this analysis, derive a **forward-looking financial outlook (전망)** for the company, identifying potential future performance and risks.
-    - IF it's an International company AND a valid ticker was found (from Step 1):
-      - Collect its financial data for approximately the last two years (all available quarters within this period) using the 'Collect Financial Datad' (YahooFinanceDataTool) tool.
-      - Perform a comprehensive time-series analysis of key financial metrics as specified for Korean companies (revenue, operating_income, net_income, Current Assets, Non Current Assets, Current Liabilities, Non Current Liabilities, Total Assets, Total Liabilities, Total Stockholder Equity - adjust names as per Yahoo Finance data).
-      - Analyze trends, significant changes, and inter-relationships between these metrics over the entire two-year period.
-      - Based on this analysis, derive a **forward-looking financial outlook (전망)** for the company, identifying potential future performance and risks.
-    - IF it's an International company AND no valid ticker was found (from Step 1):
-      - **STOP** the analysis and state that financial analysis is not applicable due to the inability to find a valid ticker.
+# 🔹 2. Document Parsing Task (새로 추가)
+#    - Agent: document_parser
+#    - Input: {"status": "file_downloaded_needs_parsing", "file_path": "..."} (financial_data_collection_task의 결과)
+#    - Output: {"status": "parsed_data_ready", "parsed_data": {...}}
 
-    **Step 3: Final Output Generation**
+document_parsing_task:
+  description: |
+    **Objective:** Read EVERY provided XML file, identify its financial reporting period, and extract ALL key financial data using your LLM.
+
+    **Step 1: Process Each XML File IN SEQUENCE**
+    - You will receive a dictionary containing 'file_paths' (e.g., `{"status": "files_downloaded_needs_parsing", "file_paths": ["path/to/file1.xml", "path/to/file2.xml", ...]}`).
+    - **You MUST process EACH AND EVERY 'file_path' in the provided list.** For each 'file_path':
+      - **Use the 'Read and Delete XML File' tool to read the XML content as a string.** This tool will automatically delete each file after reading.
+
+    **Step 2: Parse XML Content with LLM for Each File**
+    - After receiving the XML content string from the tool for a given file, **you MUST use your LLM reasoning capabilities to perform the following**:
+      - **Identify the precise financial reporting period** for that specific report (e.g., "2023_Annual" for a 2023 annual report, or "2023_1Q" for a Q1 report). This period will serve as a unique key for the data from this report.
+      - **Extract the most recent values for the following specific financial items into a JSON object**:
+        - `asset_moveable` (유동자산 / Current Assets)
+        - `asset_unmoveable` (비유동자산 / Non-Current Assets)
+        - `bet_moveable` (유동부채 / Current Liabilities)
+        - `bet_unmoveable` (비유동부채 / Non-Current Liabilities)
+        - `amount_bet` (부채총계 / Total Liabilities)
+        - `amount_asset` (자본총계 / Total Capital/Equity)
+        - `revenue` (매출액 / Revenue)
+        - `gross_profit` (매출총이익 / Gross Profit)
+        - `operating_income` (영업이익 / Operating Income)
+        - `net_income` (당기순이익 / Net Income)
+      
+      - Ensure values contain only numbers, remove commas (,), and currency symbols ('원'). Assume the unit is 'KRW' (Korean Won).
+      - If a specific item is not found or cannot be reliably extracted, mark its value as `null`.
+
+    **Step 3: AGGREGATE ALL Parsed Data into a Single Output**
+    - **Crucially, you MUST collect and aggregate the parsed JSON data from ALL files you process.**
+    - **Create a single, comprehensive final JSON object.** The top-level keys of this final object should be the identified financial periods (e.g., "2023_Annual", "2022_4Q"), and their values should be the extracted financial data dictionaries for that period.
+    - If multiple files provide data for the **same exact period**, explicitly state the rule you applied (e.g., "used data from the latest filed report for YYYY_Annual") within your thought process, and ensure the most appropriate data is kept.
+    - **Your final output for this task MUST contain data for ALL parsed periods.**
+
+    Return this final aggregated JSON object.
+    If parsing critically fails for all files, return:
+    ```json
+    {
+      "status": "parsing_failed",
+      "reason": "Could not parse financial data from any of the provided XML files.",
+      "original_file_paths": ["...", "..."]
+    }
+    ```
+  expected_output: |
+    A JSON object containing financial data, where keys are financial periods (e.g., "2023_Annual", "2022_4Q"),
+    and values are dictionaries of extracted financial items. **This output MUST include data for ALL periods found in the input files.**
+    Example:
+    {
+      "2023_Annual": {
+        "asset_moveable": ...,
+        "revenue": ...,
+        ...
+      },
+      "2022_Annual": {
+        "asset_moveable": ...,
+        "revenue": ...,
+        ...
+      },
+      "status": "parsed_data_ready"
+    }
+    Or an error message if parsing failed across all files.
+  agent: document_parser
+financial_analysis_task:
+  description: |
+    **Objective:** Conduct a comprehensive financial analysis for '{company_name}' based on the provided financial data.
+
+    **Step 1: Data Consolidation**
+    - You will receive financial data from either the 'financial_data_collection_task' (if OpenDART/Yahoo succeeded) or the 'document_parsing_task' (if XML parsing was necessary and successful).
+    - **CRITICAL**: First, check the input data's 'status'.
+      - IF the status is 'ticker_not_found' (from 'financial_data_collection_task'), **STOP** the analysis and proceed directly to Step 4.
+      - IF the status is 'parsing_failed' (from 'document_parsing_task'), **STOP** the analysis and proceed directly to Step 4.
+      - OTHERWISE, consolidate the provided financial data for analysis.
+        - If data is from 'financial_data_collection_task', it will be in the format: `{"status": "data_collected", "data": {"YYYY_Q": {...}}}`. Use the 'data' part.
+        - If data is from 'document_parsing_task', it will be in the format: `{"status": "parsed_data_ready", "parsed_data_by_file": {"YYYY_Annual_or_Q": {...}, ...}}`. Use the 'parsed_data_by_file' part.
+        - **Combine ALL available data from ALL provided periods into a coherent time-series for analysis.** Ensure consistency in financial item keys (e.g., `revenue`, `operating_income`, `asset_moveable`, etc.) across all periods. Sort the data by period (e.g., chronologically) for trend analysis. Prioritize the most recent and complete dataset for each period if duplicates exist.
+
+    **Step 2: Comprehensive Time-Series Analysis**
+    - Perform a comprehensive time-series analysis of key financial metrics (using the following exact keys for consistency):
+      - `revenue`, `gross_profit`, `operating_income`, `net_income`
+      - `asset_moveable`, `asset_unmoveable`, `amount_asset`
+      - `bet_moveable`, `bet_unmoveable`, `amount_bet`
+    - Analyze trends, significant changes, and inter-relationships between these metrics over the available period (ideally approximately the last two years, all available quarters/years).
+
+    **Step 3: Derive Financial Outlook & Risks/Opportunities**
+    - Based on your analysis, derive a **forward-looking financial outlook (전망)** for the company, identifying potential future performance and risks.
+
+    **Step 4: Final Output Generation**
     The final output should be a structured JSON object.
 
-    If analysis was performed (Korean or International with valid ticker), the JSON should include:
+    If analysis was performed (data was successfully collected/parsed), the JSON should include:
     ```json
     {
       "company_name": "{company_name}",
-      "financial_data_by_quarter": {
-        "YYYY_Q1": {
-          "revenue": ...,
-          "operating_income": ...,
-          "net_income": ...,
+      "financial_data_by_period": [ # This will contain consolidated data by period
+        "YYYY_Annual_or_Q": { # Example: "2023_Annual", "2022_4Q"
           "asset_moveable": ...,
           "asset_unmoveable": ...,
-          "amount_asset": ...,
           "bet_moveable": ...,
           "bet_unmoveable": ...,
           "amount_bet": ...,
-          "amount_asset_equity": ...
+          "amount_asset": ...,
+          "revenue": ...,
+          "gross_profit": ...,
+          "operating_income": ...,
+          "net_income": ...
         },
-        // ... for approximately the last two years (all available quarters within that period)
-      },
+        // ... for approximately the last two years (all available periods within that period)
+      ],
       "key_trends": {
         "revenue_trend": "...",
         "operating_income_trend": "...",
         "net_income_trend": "...",
         "asset_liability_structure_trend": "...",
-        "cash_flow_outlook_trend": "...", # Optional, if cash flow is analyzed
+        "profitability_trend": "...",
+        "liquidity_trend": "...",
         // ... other relevant trends
       },
       "financial_outlook": "...",
@@ -85,19 +202,18 @@ financial_task:
       ]
     }
     ```
-    If financial analysis was NOT applicable (international company with no valid ticker), the JSON should be:
+    If financial analysis was NOT applicable (international company with no valid ticker, or parsing failed), the JSON should be:
     ```json
     {
       "company_name": "{company_name}",
       "status": "Financial analysis not applicable",
-      "reason": "Could not find a valid stock ticker for this international company."
+      "reason": "Could not find a valid stock ticker for this international company OR parsing of the auditor report failed."
     }
     ```
   expected_output: |
-      A structured JSON object representing the comprehensive financial analysis,
-      or an object indicating non-applicability due to missing ticker for international companies.
+    A structured JSON object representing the comprehensive financial analysis,
+    or an object indicating non-applicability due to missing ticker or parsing failure.
   agent: financial_analyst
-  output_file: financial_analysis_{company_name}.json
 
 news_collection_task:
   description: >

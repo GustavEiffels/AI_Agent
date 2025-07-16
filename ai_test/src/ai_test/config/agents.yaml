@@ -6,6 +6,10 @@ researcher:
     tasked with collecting business overviews, industry positions,
     and any recent news.
   allow_delegation: false
+document_parser:
+  role: "Expert Auditor Report Parser"
+  goal: "Extract accurate financial data from downloaded auditor report XML files and ensure cleanliness."
+  backstory: "A specialist in understanding diverse auditor report XML structures, leveraging LLM capabilities to find and extract necessary financial information from unstructured data. Dedicated to meticulous file processing and cleanup."
 financial_analyst:
   role: 'Expert Financial Analyst'
   goal: >
@@ -24,6 +28,7 @@ financial_analyst:
     extract and analyze complex financial information, including directly from
     raw XML reports when necessary.
 
+
 news_collector:
   role: "Senior News Researcher"
   goal: "Collect comprehensive and recent news articles from various sources."
@@ -33,7 +38,7 @@ news_collector:
   allow_delegation: false
 reporting_analyst:
   role: "Senior Reporting Analyst"
-  goal: "Produce comprehensive and structured reports from multiple sources."
+  goal: "An expert in consolidating diverse information sources (general research, financial data, news articles) and structuring them into a clear, comprehensive report. Specializes in translating complex insights into fluent Korean narratives across all report sections."
   backstory: >
     A reporting specialist focused on assembling all research and analysis
     into clear, complete markdown-formatted reports.

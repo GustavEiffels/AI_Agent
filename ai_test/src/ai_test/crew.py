@@ -1,6 +1,6 @@
 from crewai import Agent, Crew, Process, Task
 from crewai.project import CrewBase, agent, crew, task, output_pydantic
-from .tools.dart_tool import CollectFinancialDataTool
+from .tools.dart_tool import CollectFinancialDataTool, ReadAndDeleteXmlFileTool
 from .tools.naver_tool import NaverSearchDataTool
 from .tools.yahoo_tool import YahooFinanceDataTool, YahooFinanceNewsDataTool
 from .tools.goolge_search_tool import GoogleSearchTickerTool
@@ -36,6 +36,16 @@ class AiTest():
         )
 
     @agent
+    def document_parser(self) -> Agent:
+        return Agent(
+            config=self.agents_config['document_parser'],
+            verbose=True,
+            tools=[
+                ReadAndDeleteXmlFileTool()
+            ]
+        )
+
+    @agent
     def news_collector(self) -> Agent:
         pass
         return Agent(
@@ -62,10 +72,27 @@ class AiTest():
         )
 
     @task
-    def financial_task(self) -> Task:
+    def financial_data_collection_task(self) -> Task:
         return Task(
-            config=self.tasks_config['financial_task'],
-            output_file='financial_task.md'
+            config=self.tasks_config['financial_data_collection_task'],
+            agent=self.financial_analyst(),
+            context=[]
+        )
+
+    @task
+    def document_parsing_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['document_parsing_task'],
+            agent=self.document_parser(),
+            context=[self.financial_data_collection_task()]
+        )
+
+    @task
+    def financial_analysis_task(self) -> Task:
+        return Task(
+            config=self.tasks_config['financial_analysis_task'],
+            agent=self.financial_analyst(),
+            context=[self.financial_data_collection_task(), self.document_parsing_task()]
         )
 
     @task
@@ -89,11 +116,14 @@ class AiTest():
                 self.researcher(),
                 self.financial_analyst(),
                 self.news_collector(),
-                self.reporting_analyst()
+                self.reporting_analyst(),
+                self.document_parser()
             ],
             tasks=[
+                self.financial_data_collection_task(),
+                self.document_parsing_task(),
+                self.financial_analysis_task(),
                 self.research_task(),
-                self.financial_task(),
                 self.news_collection_task(),
                 self.reporting_task()
             ],
