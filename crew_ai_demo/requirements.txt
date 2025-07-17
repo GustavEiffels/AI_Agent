@@ -1,7 +1,0 @@
-fastapi
-uvicorn[standard]
-pydantic
-crewai[tools]
-python-dotenv
-pymongo
-yfinance

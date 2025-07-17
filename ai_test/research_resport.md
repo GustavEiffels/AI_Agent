@@ -1,11 +1,10 @@
-- 에스비티글로벌 (SBT Global) is an IT solutions company led by CEO 서병구, with over 20 years of industry experience, specializing in digital and IT business innovation.  
-- The company recently participated in the 2025 World IT Show held in Seoul COEX from April 24 to 26, showcasing its IT solutions and emphasizing its long-standing expertise and differentiated capabilities in the market.  
-- 에스비티글로벌 hosted a successful 'SAP on AWS Business Innovation Seminar' in partnership with Amazon Web Services (AWS) in April 2025, emphasizing their focus on cloud computing and enterprise resource planning (ERP) digital transformation.  
-- The company has developed its own ETL (Extract, Transform, Load) platform named 'INFOractive ETL,' which secured the highest grade 1 certification (GS인증 1등급) from the Korean Information and Communication Technology Association (TTA). This certification validates the platform’s reliability and operational readiness in real production environments, thus boosting market trust.  
-- Their business activities mainly focus on IT solution development, digital innovation, cloud services integration, and enterprise system optimization, with a strong emphasis on partnerships with key players like AWS to drive technology adoption in Korea.  
-- 에스비티글로벌 shows commitment to continuous innovation and strengthening its product competitiveness by investing in proprietary technology platforms and participating in major industry exhibitions and seminars.  
-- The company is navigating industry challenges such as operational cost management and aims to convert its strong sales growth into sustainable profitability while enhancing operational efficiency.  
-- 에스비티글로벌 is actively building its market position as a trusted IT solutions provider within Korean and regional IT sectors by leveraging technological expertise and certification achievements.  
-- Their recent activities underline a strategic focus on expanding digital innovation capabilities and increasing presence in cloud and enterprise IT infrastructure domains.
-
-This overview highlights 에스비티글로벌’s non-financial strengths, business focus, recent initiatives, and industry positioning as of 2025.
+- 스트라드비젼 is a Korean AI startup specializing in AI-based video recognition software, with its flagship product named 'SVNet.'
+- The company received the prestigious '2025 AI Breakthrough Award' for 'SVNet,' highlighting its technological innovation and competitiveness in the global AI market.
+- 'SVNet' is recognized for advanced AI-driven video analysis capabilities, positioning 스트라드비젼 as a notable player in the AI and visual recognition industry.
+- The award signifies the company’s strong R&D focus and successful application of AI technology in video recognition solutions.
+- 스트라드비젼 is led by CEO 김준환, under whose leadership the company has made significant strides in AI software development.
+- The company continues to emphasize innovation and practical AI application, aiming to expand its presence and relevance in both Korean and international technology sectors.
+- Recent news show active industry recognition and positive exposure, which may lead to new business opportunities and partnerships.
+- Despite financial challenges indicated in prior financial data, the company's technological achievements suggest strategic progress in operational and product development.
+- 스트라드비젼 is seen as an AI pioneer in Korea, contributing to advancements in AI recognition software and potentially influencing future markets such as autonomous driving, smart surveillance, and other AI-driven solutions.
+- The company maintains a reputation for cutting-edge AI research and is likely to continue investing in AI innovations to maintain its competitive foothold.

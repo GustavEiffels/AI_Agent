@@ -1,5 +1,5 @@
 import os
-from typing import Optional, List, Dict, Any, Coroutine, Mapping
+from typing import Optional, Dict, Any
 from dotenv import load_dotenv
 from bson import ObjectId
 from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase, AsyncIOMotorCollection
@@ -7,19 +7,23 @@ from motor.motor_asyncio import AsyncIOMotorClient, AsyncIOMotorDatabase, AsyncI
 load_dotenv()
 
 MONGO_URI = os.getenv("MONGO_URI")
+MONGO_PORT = os.getenv("MONG_PORT", "27017") # 기본값 설정
 DB_NAME = os.getenv("DB_NAME")
 
 _mongo_client: Optional[AsyncIOMotorClient] = None
 _database_instance: Optional[AsyncIOMotorDatabase] = None
 
+
 async def connect_to_mongodb():
     global _mongo_client, _database_instance
     if _mongo_client is None:
         try:
-            _mongo_client = AsyncIOMotorClient(MONGO_URI)
+            connection_string = f"mongodb://{MONGO_URI}:{MONGO_PORT}/"
+            _mongo_client = AsyncIOMotorClient(connection_string)
             _database_instance = _mongo_client.get_database(DB_NAME)
+            print("MongoDB에 성공적으로 연결되었습니다.")
         except Exception as e:
-            print(f"Error connecting to MongoDB: {e}")
+            print(f"MongoDB 연결 중 오류 발생: {e}")
             _mongo_client = None
             _database_instance = None
             raise

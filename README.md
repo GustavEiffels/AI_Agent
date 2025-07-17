@@ -238,3 +238,63 @@ erDiagram
   }
 
 ```
+
+## Build
+```commandline
+docker build -t ai_test .
+```
+
+## requirements.txt 추출하는 방법
+```bash
+pip freeze > requirements.txt
+```
+
+## ERROR
+```commandline
+-----
+ > [4/5] RUN pip install --no-cache-dir -r requirements.txt:
+1.909 Obtaining ai_test from git+https://github.com/GustavEiffels/AI_Agent.git@8c6c8af07368aed7ef4f08af3f3565ea3c38b207#egg=ai_test&subdirectory=ai_test (from -r requirements.txt (line 1))
+1.909   Cloning https://github.com/GustavEiffels/AI_Agent.git (to revision 8c6c8af07368aed7ef4f08af3f3565ea3c38b207) to ./src/ai-test
+1.910   ERROR: Error [Errno 2] No such file or directory: 'git' while executing command git version
+1.910 ERROR: Cannot find command 'git' - do you have 'git' installed and in your PATH?
+2.151
+2.151 [notice] A new release of pip is available: 23.0.1 -> 25.1.1
+2.151 [notice] To update, run: pip install --upgrade pip
+------
+dockerfile:4
+--------------------
+   2 |     WORKDIR /app
+   3 |     COPY requirements.txt .
+   4 | >>> RUN pip install --no-cache-dir -r requirements.txt
+   5 |     COPY . /app
+   6 |
+--------------------
+ERROR: failed to solve: process "/bin/sh -c pip install --no-cache-dir -r requirements.txt" did not complete successfully: exit code: 1
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/cif0pavj1p6umntn1n8vh7h56
+(venv) PS C:\Users\SIUK\AI_Agent\ai_test> 
+
+
+```
+> 이 줄은 pip에게 requirements.txt 파일의 첫 번째 줄에서 ai_test라는 패키지를 Git 저장소(https://github.com/GustavEiffels/AI_Agent.git) 에서 직접 다운로드하여 설치하라고 지시하고 있습니다.
+pip이 Git 저장소에서 패키지를 설치하려면, 컨테이너 내부에도 git 클라이언트가 설치되어 있어야 합니다. 하지만 여러분의 Dockerfile은 git을 설치하는 지시를 포함하고 있지 않습니다.
+
+## Error 02 
+```commandline
+(venv) PS C:\Users\SIUK\AI_Agent\ai_test> docker build -t ai_test .
+[+] Building 0.3s (1/1) FINISHED                                                                                                                                                                                                                                                            docker:desktop-linux
+ => [internal] load build definition from dockerfile                                                                                                                                                                                                                                                        0.0s
+ => => transferring dockerfile: 336B                                                                                                                                                                                                                                                                        0.0s 
+dockerfile:12
+--------------------
+  10 |     CMD ["uvicorn", "src.ai_test.main:app", "--host", "0.0.0.0", "--port", "8000"]
+  11 |
+  12 | >>> // docker build -t ai_test .
+--------------------
+ERROR: failed to solve: dockerfile parse error on line 12: unknown instruction: //
+
+View build details: docker-desktop://dashboard/build/desktop-linux/desktop-linux/ema12ynq7ish7d5og2rk128ie
+(venv) PS C:\Users\SIUK\AI_Agent\ai_test> 
+
+```
+> 12번째 줄에 // docker build -t ai_test . 라는 내용이 있고, //가 Dockerfile에서 알 수 없는 명령어라고 나오고 있습니다. 제가 이전에 설명하려고 넣었던 예시 명령어가 실수로 Dockerfile 내용에 포함된 것 같습니다.
