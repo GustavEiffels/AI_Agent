@@ -1,10 +1,7 @@
-- 스트라드비젼 is a Korean AI startup specializing in AI-based video recognition software, with its flagship product named 'SVNet.'
-- The company received the prestigious '2025 AI Breakthrough Award' for 'SVNet,' highlighting its technological innovation and competitiveness in the global AI market.
-- 'SVNet' is recognized for advanced AI-driven video analysis capabilities, positioning 스트라드비젼 as a notable player in the AI and visual recognition industry.
-- The award signifies the company’s strong R&D focus and successful application of AI technology in video recognition solutions.
-- 스트라드비젼 is led by CEO 김준환, under whose leadership the company has made significant strides in AI software development.
-- The company continues to emphasize innovation and practical AI application, aiming to expand its presence and relevance in both Korean and international technology sectors.
-- Recent news show active industry recognition and positive exposure, which may lead to new business opportunities and partnerships.
-- Despite financial challenges indicated in prior financial data, the company's technological achievements suggest strategic progress in operational and product development.
-- 스트라드비젼 is seen as an AI pioneer in Korea, contributing to advancements in AI recognition software and potentially influencing future markets such as autonomous driving, smart surveillance, and other AI-driven solutions.
-- The company maintains a reputation for cutting-edge AI research and is likely to continue investing in AI innovations to maintain its competitive foothold.
+- 삼성전자는 글로벌 빅테크 기업인 테슬라와 23조원 규모의 초대형 계약을 성사시켰습니다. 이 계약은 삼성전자의 파운드리 사업부가 3년 후부터 테슬라의 차세대 'AI6' 자율주행용 AI 칩을 전량 공급하는 내용으로, 삼성전자의 첨단 2~4나노 공정 기술력을 활용합니다.
+- 최근 이 계약 체결로 삼성전자는 분기마다 적자를 내던 파운드리 사업부의 경쟁력 회복 및 수주 확대에 대한 긍정적 신호탄이 되었습니다.
+- 테슬라에 납품하는 AI6 칩은 자율주행 기술에 필수적인 고성능 AI 프로세서로, 이는 삼성전자가 첨단 반도체 시장에서 기술적 선도 위치를 공고히 하고 있음을 의미합니다.
+- 삼성전자는 첨단 반도체 생산 시설 확대 및 글로벌 공급망 강화에 중점을 두고 있으며, AI, 5G, 전장 부품 등 미래 신기술 분야의 선도적 사업자로 자리매김하고 있습니다.
+- 최근 삼성전자의 비재무적 활동에서는 지속가능 경영과 사회적 책임 강화에 집중, 환경·사회·지배구조(ESG) 경영을 통해 친환경 공정 도입과 지역사회 지원 등 다양한 CSR 활동도 활발히 추진 중입니다.
+- 삼성전자는 전자, 반도체, 통신 등 다양한 분야에서 혁신 제품 개발과 글로벌 협력 확대를 지속하며 업계 내 굳건한 입지를 유지하고 있습니다.
+- 향후에도 삼성전자는 기술 경쟁력과 글로벌 파트너십을 바탕으로 4차 산업혁명 시대를 선도하는 기업으로 성장할 계획입니다.
