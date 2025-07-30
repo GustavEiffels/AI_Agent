@@ -33,6 +33,7 @@ app = FastAPI(
     version="1.0.0",
     lifespan=lifespan
 )
+RESULT_DIR = "results"
 
 def time_it(func: Callable) -> Callable:
     @functools.wraps(func)
@@ -59,7 +60,7 @@ class FinancialAnalysisRequest(BaseModel):
     company_name: str = Field(..., example="삼성전자", description="The specific company name for financial analysis.")
     is_korean: bool = Field(..., example=True, description="True if the company is Korean, False otherwise.")
 
-@app.post("/run")
+@app.post("/finance_ai")
 @time_it
 async def run_crew(request: FinancialAnalysisRequest) -> dict[str, str | Any] | str:
 
@@ -126,3 +127,5 @@ async def run_crew(request: FinancialAnalysisRequest) -> dict[str, str | Any] | 
 @time_it
 async def read_root():
     return {"message": "Welcome to the AI Financial Analysis Crew API!"}
+
+

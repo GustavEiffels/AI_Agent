@@ -1,0 +1,40 @@
+Account Data (Last Year 2024-07-01 to 2025-07-01):
+head(10):
+[{'Id':'001Ig00000GBmWmIAL','Name':'250610_전환 테스트','CreatedDate':'2025-06-10T13:38:26.000+0000'},
+ {'Id':'001Ig00000GBo86IAD','Name':'250610_전환 테스트2','CreatedDate':'2025-06-10T16:06:08.000+0000'},
+ {'Id':'001Ig00000GCvxwIAD','Name':'테스트1','CreatedDate':'2025-06-17T04:04:36.000+0000'},
+ {'Id':'001Ig00000GCvuzIAD','Name':'테스트2','CreatedDate':'2025-06-17T04:14:11.000+0000'},
+ {'Id':'001Ig00000GCwtfIAD','Name':'삼성전자','CreatedDate':'2025-06-17T05:46:35.000+0000'},
+ {'Id':'001Ig00000GDuKiIAL','Name':'nadp','CreatedDate':'2025-06-23T00:22:33.000+0000'},
+ {'Id':'001Ig00000GDuKjIAL','Name':'Jdoe','CreatedDate':'2025-06-23T00:22:34.000+0000'},
+ {'Id':'001Ig00000GDuKkIAL','Name':'bsom','CreatedDate':'2025-06-23T00:22:34.000+0000'}]
+Shape: (8, 3)
+Category counts - by CreatedDate month year:
+{'2025-06':8}
+
+Lead Data (Last Year 2024-07-01 to 2025-07-01):
+head(10):
+[{'Id':'00QIg000004qaYDMAY','Name':'리드테스트1','Email':None,'Status':'Open - Not Contacted','CreatedDate':'2025-06-29T14:53:38.000+0000'},
+ {'Id':'00QIg000004qLDRMA2','Name':'테스트','Email':'aa@aa.aa','Status':'Open - Not Contacted','CreatedDate':'2025-05-20T23:58:42.000+0000'},
+ {'Id':'00QIg000004qUq0MAE','Name':'WebToLead','Email':'WebToLead@web.com','Status':'Open - Not Contacted','CreatedDate':'2025-06-17T07:57:31.000+0000'}]
+Shape: (3, 5)
+Category counts - by Status:
+{'Open - Not Contacted':3}
+
+Opportunity Data (Last Year 2024-07-01 to 2025-07-01):
+head(10):
+[{'Id':'006Ig000005034OIAQ','Name':'opptytest','StageName':'Prospecting','CloseDate':'2025-06-18','CreatedDate':'2025-06-11T04:57:15.000+0000'},
+ {'Id':'006Ig00000507hbIAA','Name':'ddasd','StageName':'Prospecting','CloseDate':'2025-06-26','CreatedDate':'2025-06-16T05:16:23.000+0000'},
+ {'Id':'006Ig00000509tQIAQ','Name':'테스트oppty','StageName':'Identified','CloseDate':'2025-06-25','CreatedDate':'2025-06-17T04:05:24.000+0000'},
+ {'Id':'006Ig0000050CDkIAM','Name':'aaaasd_20250618','StageName':'Identified','CloseDate':'2025-06-26','CreatedDate':'2025-06-18T05:40:09.000+0000'},
+ {'Id':'006Ig0000050HG5IAM','Name':'TEST321_20250623','StageName':'Identified','CloseDate':'2025-06-30','CreatedDate':'2025-06-23T01:34:52.000+0000'}]
+Shape: (5, 5)
+Category counts - by StageName:
+{'Prospecting':2, 'Identified':3}
+
+Counts for 2025-07 (Current Month):
+Account count = 30
+Lead count = 0
+Opportunity count = 30
+
+User data retrieval failed due to system access limitations, omitted from final report.
