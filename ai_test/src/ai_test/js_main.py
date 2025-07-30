@@ -1,212 +1,109 @@
-from typing import Dict
+from typing import Dict, List
 from ai_test.jh_crew import SbtProject
-from fastapi import FastAPI, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks, Body  # Body 임포트 추가
+from pydantic import BaseModel, Field  # BaseModel, Field 임포트 추가
 import asyncio
 import json
+import traceback
+import warnings
+from dotenv import load_dotenv
 
 app = FastAPI()
+load_dotenv()
 
-async def run_crew_process(inputs: dict) -> Dict:
+warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
+
+
+
+class Activity(BaseModel):
+    """
+    단일 영업 활동의 세부 정보를 정의합니다.
+    """
+    ActivityDate: str = Field(..., example="2024-06-09", description="활동 발생 날짜 (YYYY-MM-DD)")
+    Subject: str = Field(..., example="공고", description="활동의 주제 또는 제목")
+    Description: str = Field(..., example="• 사업기간 : 2024년 10월 ~ 2025년 9월 (12개월)...", description="활동에 대한 상세 설명")
+
+
+class SalesActivity(BaseModel):
+    """
+    회사와 관련된 모든 영업 활동 데이터를 정의합니다.
+    """
+    company: str = Field(..., example="현대자동차", description="분석 대상 회사의 이름")
+    activity: List[Activity] = Field(..., description="회사와 관련된 영업 활동 리스트")
+
+
+# --- 백그라운드 CrewAI 처리 함수 ---
+
+async def run_crew_process_in_background(inputs: Dict):
+    """
+    CrewAI 작업을 백그라운드에서 실행하고 그 결과를 처리합니다.
+    이 함수의 반환 값은 클라이언트에게 직접 전달되지 않으므로,
+    결과는 로그로 출력하거나 파일/DB에 저장해야 합니다.
+    """
+    company_name = inputs.get('company', 'Unknown Company')
+    print(f"백그라운드 CrewAI 프로세스 시작 (회사: {company_name})")
     try:
-        # The kickoff method returns the raw string output of the final task.
-        raw_result_string = await asyncio.to_thread(SbtProject().crew().kickoff, inputs=inputs)
-        print(f'Raw result string from CrewAI: {raw_result_string}') # Print raw string for debugging
+        crew_instance = SbtProject()
+        # kickoff 메서드는 최종 태스크의 raw 문자열 출력을 반환합니다.
+        raw_result_string = await asyncio.to_thread(crew_instance.crew().kickoff, inputs=inputs)
 
-        # Attempt to parse the string as JSON
+        print(f'CrewAI 프로세스 완료 - 원시 결과 문자열: {raw_result_string}')  # 디버깅을 위한 원시 결과 출력
+
+        parsed_result = None
         try:
+            # CrewAI의 kickoff 결과가 이미 JSON 문자열일 경우 바로 파싱
             parsed_result = json.loads(raw_result_string)
-            print("\nCrewAI process completed successfully and JSON parsed.")
-            return parsed_result
+            print("CrewAI 결과가 성공적으로 JSON으로 파싱되었습니다.")
         except json.JSONDecodeError as e:
-            print(f"Error decoding JSON: {e}")
-            print(f"Attempting to extract JSON block from raw string...")
-            # If direct parse fails, try to find a JSON block
+            print(f"JSON 디코딩 오류 발생: {e}")
+            print(f"원시 문자열에서 JSON 블록 추출 시도 중...")
+            # 직접 파싱 실패 시, ```json ... ``` ``` 블록에서 JSON 추출 시도
             import re
             json_match = re.search(r'```json\n(.*?)```', raw_result_string, re.DOTALL)
             if json_match:
                 json_string = json_match.group(1)
                 try:
                     parsed_result = json.loads(json_string)
-                    print("\nSuccessfully extracted and parsed JSON block.")
-                    return parsed_result
+                    print("JSON 블록을 성공적으로 추출하고 파싱했습니다.")
                 except json.JSONDecodeError as inner_e:
-                    print(f"Error parsing extracted JSON block: {inner_e}")
-                    return {"error": "Failed to parse JSON even after extraction attempt", "raw_output": raw_result_string}
+                    print(f"추출된 JSON 블록 파싱 오류: {inner_e}")
+                    parsed_result = {"error": "JSON 파싱 실패 (추출 후)", "raw_output": raw_result_string}
             else:
-                return {"error": "Failed to parse JSON and no JSON block found", "raw_output": raw_result_string}
+                parsed_result = {"error": "JSON 파싱 실패 (JSON 블록 없음)", "raw_output": raw_result_string}
+
+        # 최종 파싱된 결과 출력 (또는 DB/파일 저장)
+        print(f"최종 파싱된 CrewAI 결과 (회사: {company_name}): {parsed_result}")
+        # TODO: 여기에 parsed_result를 데이터베이스에 저장하거나,
+        # 다른 API로 전송하거나, 파일로 저장하는 등의 후속 로직을 추가하세요.
 
     except Exception as e:
-        print(f"\nAn error occurred while running the CrewAI process in background: {e}")
-        return {"error": str(e), "raw_output": "Process failed before JSON parsing."}
+        print(f"\n백그라운드 CrewAI 프로세스 실행 중 오류 발생 (회사: {company_name}): {e}")
+        traceback.print_exc()  # 오류 스택 트레이스 출력
 
-@app.get("/run_crewai_task")
-async def start_crewai_task(background_tasks: BackgroundTasks):
-    print('API Endpoint Called: Starting CrewAI process...')
 
-    inputs = {
-        'company': '현대자동차',
-        'sales_activity': {
-            "activity":
-            [
-                {
-                    "ActivityDate": "2024-06-09",
-                    "Subject": "공고",
-                    "Description": "• 사업기간 : 2024년 10월 ~ 2025년 9월 (12개월)\n• 사업예산 : 약 80억원\n• 사업일정 : 2024년 7월 공고 예정 / 9월말 계약 예상\n• 예상경쟁 : KL정보통신, 하이밸류 등\n• 영업전략 : 메가존과 컨소시엄으로 CRM 고도화 부문 수행 (기존 컨버젼 컨소시엄)\n• 추진계획 : - 공단 요구사항 확인 및 투입계획 작성\n                                - 메가존과 컨소시엄 구도 협의"
-                },
-                {
-                    "ActivityDate": "2024-06-23",
-                    "Subject": "Call",
-                    "Description": "메가존과 사업 참여 컨소시엄 구성 협의"
-                },
-                {
-                    "ActivityDate": "2024-08-11",
-                    "Subject": "CRM 고도화 RFP 검토 미팅",
-                    "Description": "CRM 고도화 사업 제안요청서 요구사항 검토\n수정 및 변경 내용 반영 요청"
-                },
-                {
-                    "ActivityDate": "2024-09-01",
-                    "Subject": "사업 제안 준비",
-                    "Description": "주사업자(메가존)와 사업 수행 방안 협의 진행\n컨소시엄 확정 완료\n금주 본 사업 공고 예상\nCRM 부문 제안 작업 준비"
-                },
-                {
-                    "ActivityDate": "2024-09-15",
-                    "Subject": "주간 보고",
-                    "Description": "RFP 내부 감사 승인의 지연으로 이번 주 공고 예정\n제안팀 구성 및 제안서 작성"
-                },
-                {
-                    "ActivityDate": "2024-09-29",
-                    "Subject": "주간 보고",
-                    "Description": "국정 감사로 인하여 발주 지연\n이번 주 공고 예정\n제안팀 구성 및 제안서 작성"
-                },
-                {
-                    "ActivityDate": "2024-10-13",
-                    "Subject": "주간 보고",
-                    "Description": "계약처에서 공고 지연\n이번 주 공고 예정\n제안서 초안을 메가존에 전달 예정"
-                },
-                {
-                    "ActivityDate": "2024-10-20",
-                    "Subject": "주간 보고",
-                    "Description": "10/12 사업 공고\n11/30 입찰 마감\n10/18 (수) 제안요청설명회\n메가존 컨소시엄으로 참여 / 제안서 작성중."
-                },
-                {
-                    "ActivityDate": "2024-11-02",
-                    "Subject": "주간 보고",
-                    "Description": "제안 요청 설명회 참석\n제안서 및 수행 업무 범위 협의 w/메가존 컨소시엄"
-                },
-                {
-                    "ActivityDate": "2024-11-17",
-                    "Subject": "주간 보고",
-                    "Description": "11/30 입찰 마감으로 메가존 / KL정보 / SBT 컨소시엄으로 제안 참여\n제안서 작성 및 수행 방안 협의 중"
-                },
-                {
-                    "ActivityDate": "2024-12-08",
-                    "Subject": "사업 공고 일정",
-                    "Description": "11/30 사업 유찰 : 단독 응찰\n재공고 일정 확인 (이번 주초 예상)"
-                },
-                {
-                    "ActivityDate": "2024-12-15",
-                    "Subject": "1차 유찰 및 재공고",
-                    "Description": "11/30 유찰 : 단독 응찰\n12/1 재공고\n12/14 입찰 참가 신청\n12/15 제안 제출 마감\n12/21 개찰\n24년 1월 초 계약 예상\n예산 부족으로 수행 전략 및 금액 협의 중"
-                },
-                {
-                    "ActivityDate": "2024-12-22",
-                    "Subject": "CRM 고도화 재공고 유찰",
-                    "Description": "12/15 제안서 제출 / 재공고 유찰 : 단독 응찰\n제안 발표 예정\n기술 협상시 인력투입 계획 및 EP 구현 범위에 대한 이슈 협의"
-                },
-                {
-                    "ActivityDate": "2025-01-12",
-                    "Subject": "CRM 고도화 기술 협상 완료",
-                    "Description": "CRM 고도화 사업의 기술협상 완료\n이번 주 가격 협상 예정\n다음 주 계약 진행"
-                },
-                {
-                    "ActivityDate": "2025-01-19",
-                    "Subject": "계약 가격 협상",
-                    "Description": "현재 가격 협상중이나 협의 어려움\n계약처에서 2차 가격 연장 요청 (10일)\n협상이 안 될 경우 사업 재설계 / 재공고 가능성 있음"
-                },
-                {
-                    "ActivityDate": "2025-01-25",
-                    "Subject": "가격 협상 2차 연장",
-                    "Description": "1/25까지 가격 협상 마지막 연장\n협상 결렬시 - 사업 재설계 후 공고\n정보관리처와 협의 중"
-                },
-                {
-                    "ActivityDate": "2025-02-02",
-                    "Subject": "최종 제안 금액 투찰",
-                    "Description": "최종 금액 투찰 - 계약처와 정보관리처 협의 중"
-                },
-                {
-                    "ActivityDate": "2025-02-09",
-                    "Subject": "사업 재공고",
-                    "Description": "지난 주 계약처로부터 가격 협상 결렬 통보\n이번 주 초 재공고 예정\n담당자와 업무 범위 협의 진행"
-                },
-                {
-                    "ActivityDate": "2025-02-23",
-                    "Subject": "사업 설명회",
-                    "Description": "2/15 사업 입찰 공고 (3/28 제안 입찰 마감)\n2/16 제안 요청 설명회"
-                },
-                {
-                    "ActivityDate": "2025-03-22",
-                    "Subject": "사업 입찰 준비",
-                    "Description": "3/28 제안 마감\n경쟁 입찰 여부 모니터링\n수의 시담에 대비한 컨소시엄 협의"
-                },
-                {
-                    "ActivityDate": "2025-04-05",
-                    "Subject": "Call",
-                    "Description": "3/28 입찰 마감\n3/29 (금) 제안 발표\nVTW 경쟁으로 입찰 참가\n이번 주 우선협상 대상자 선정"
-                },
-                {
-                    "ActivityDate": "2025-04-12",
-                    "Subject": "Call",
-                    "Description": "4/4 정보관리처장 미팅\n4/9 기술협상 완료 예정\n4/15 계약 완료 예정"
-                },
-                {
-                    "ActivityDate": "2025-04-19",
-                    "Subject": "Call",
-                    "Description": "기술 협상 및 가격 협상 완료\n이번 주 계약 예상\n컨소시엄사 금액 협의 및 확정"
-                },
-                {
-                    "ActivityDate": "2025-05-03",
-                    "Subject": "Call",
-                    "Description": "지난 주 국가철도공단 계약 완료\n착수계 및 수행인력 계약 진행"
-                },
-                {
-                    "ActivityDate": "2025-05-10",
-                    "Subject": "Call",
-                    "Description": "5/3 금 : 공단 조직 개편으로 디지털융합처 처장, 부장 미팅\n착수계 서류 준비"
-                },
-                {
-                    "ActivityDate": "2025-05-31",
-                    "Subject": "Call",
-                    "Description": "5/30 착수보고회 예정"
-                },
-                {
-                    "ActivityDate": "2025-06-07",
-                    "Subject": "Call",
-                    "Description": "5/30 착수보고회\n대금 지급 조건 협의 중"
-                },
-                {
-                    "ActivityDate": "2025-06-14",
-                    "Subject": "Call",
-                    "Description": "- 2025년 매출 계획 12억 (SBT 영역, VAT포함)\n- 12억원의 40% 선금 신청 예정 (6월 말까지)"
-                },
-                {
-                    "ActivityDate": "2025-06-21",
-                    "Subject": "Call",
-                    "Description": "6/11 국가철도공단 착수 회식\n24년 13억 (VAT 별도) 세금 계산서 / 선금 5억 진행"
-                },
-                {
-                    "ActivityDate": "2025-06-28",
-                    "Subject": "Call",
-                    "Description": "대금 지급 조건 확정 및 선금 신청\n인천항만공사 벤치마킹 방문"
-                },
-                {
-                    "ActivityDate": "2025-07-01",
-                    "Subject": "신제품 소개 미팅",
-                    "Description": "신제품 소개 미팅"
-                }
-            ]
-        }
+# --- FastAPI 엔드포인트 ---
+
+@app.post("/analyze_sales_activity")  # POST 엔드포인트로 변경
+async def analyze_sales_activity(
+        sales_data: SalesActivity,  # 요청 본문으로부터 SalesActivity 모델을 받음
+        background_tasks: BackgroundTasks
+):
+    """
+    영업 활동 데이터를 받아 백그라운드에서 CrewAI 분석 작업을 시작합니다.
+    분석 작업은 즉시 반환되며, 결과는 백그라운드에서 처리됩니다.
+    """
+    print('API 엔드포인트 호출됨: CrewAI 프로세스 시작 중...')
+
+    # Pydantic 모델에서 받은 데이터를 CrewAI 입력 형식에 맞게 변환 (이미 맞는 형식)
+    inputs = sales_data.dict()  # Pydantic 모델을 딕셔너리로 변환
+
+    print(f'CrewAI에 전달될 입력: {inputs.get("company", "N/A")}')
+
+    # CrewAI 작업을 백그라운드 태스크로 추가
+    background_tasks.add_task(run_crew_process_in_background, inputs)
+
+    # 즉시 응답 반환
+    return {
+        'message': f'CrewAI가 백그라운드에서 {sales_data.company}에 대한 영업 활동 분석을 시작합니다.',
+        'status': 'processing'
     }
-
-    print(f'Inputs for CrewAI: {inputs}')
-    final_output = await run_crew_process(inputs)
-    return final_output
