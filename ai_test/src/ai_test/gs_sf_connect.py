@@ -9,10 +9,10 @@ class SalesforceConnection:
     def __init__(self):
         env_path = '../../../.env'
         load_dotenv(env_path)
-        self.username = os.getenv('GS_SF_USERNAME')
-        self.password = os.getenv('GS_SF_PASSWORD')
-        self.security_token = os.getenv('GS_SF_TOKEN')
-        self.instance_url = os.getenv('GS_SF_INSTANCE_URL')
+        self.username = os.getenv('MAIN_SF_USERNAME')
+        self.password = os.getenv('MAIN_SF_PASSWORD')
+        self.security_token = os.getenv('MAIN_SF_TOKEN')
+        self.instance_url = os.getenv('MAIN_SF_INSTANCE_URL')
         self.sf = None
     def connect(self):
         try:

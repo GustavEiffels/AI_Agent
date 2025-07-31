@@ -13,33 +13,18 @@ load_dotenv()
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 
-
-
 class Activity(BaseModel):
-    """
-    단일 영업 활동의 세부 정보를 정의합니다.
-    """
     ActivityDate: str = Field(..., example="2024-06-09", description="활동 발생 날짜 (YYYY-MM-DD)")
     Subject: str = Field(..., example="공고", description="활동의 주제 또는 제목")
     Description: str = Field(..., example="• 사업기간 : 2024년 10월 ~ 2025년 9월 (12개월)...", description="활동에 대한 상세 설명")
 
 
 class SalesActivity(BaseModel):
-    """
-    회사와 관련된 모든 영업 활동 데이터를 정의합니다.
-    """
     company: str = Field(..., example="현대자동차", description="분석 대상 회사의 이름")
     activity: List[Activity] = Field(..., description="회사와 관련된 영업 활동 리스트")
 
 
-# --- 백그라운드 CrewAI 처리 함수 ---
-
 async def run_crew_process_in_background(inputs: Dict):
-    """
-    CrewAI 작업을 백그라운드에서 실행하고 그 결과를 처리합니다.
-    이 함수의 반환 값은 클라이언트에게 직접 전달되지 않으므로,
-    결과는 로그로 출력하거나 파일/DB에 저장해야 합니다.
-    """
     company_name = inputs.get('company', 'Unknown Company')
     print(f"백그라운드 CrewAI 프로세스 시작 (회사: {company_name})")
     try:
@@ -51,13 +36,11 @@ async def run_crew_process_in_background(inputs: Dict):
 
         parsed_result = None
         try:
-            # CrewAI의 kickoff 결과가 이미 JSON 문자열일 경우 바로 파싱
             parsed_result = json.loads(raw_result_string)
             print("CrewAI 결과가 성공적으로 JSON으로 파싱되었습니다.")
         except json.JSONDecodeError as e:
             print(f"JSON 디코딩 오류 발생: {e}")
             print(f"원시 문자열에서 JSON 블록 추출 시도 중...")
-            # 직접 파싱 실패 시, ```json ... ``` ``` 블록에서 JSON 추출 시도
             import re
             json_match = re.search(r'```json\n(.*?)```', raw_result_string, re.DOTALL)
             if json_match:

@@ -19,6 +19,7 @@ import asyncio
 import requests
 from uuid import uuid4
 from typing import Dict, List
+import ai_test.simple_main_sfdc as sfdc_connect
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
 warnings.filterwarnings("ignore", category=DeprecationWarning, module="pydantic")
@@ -67,6 +68,11 @@ class FinancialAnalysisRequest(BaseModel):
     company_name: str = Field(..., example="삼성전자", description="The specific company name for financial analysis.")
     is_korean: bool = Field(..., example=True, description="True if the company is Korean, False otherwise.")
 
+class StandardResponse(BaseModel):
+    code: int = Field(..., description="HTTP status-like code (e.g., 200 for success, 500 for error)")
+    message: str = Field(..., description="A human-readable message about the operation status")
+    category: str = Field(..., description="Categorization of the response (e.g., 'finance_analysis', 'sales_activity', 'error')")
+    data: Any = Field(None, description="The actual data payload, can be any JSON-serializable object")
 
 async def run_finance_analysis_crew_in_background(inputs: Dict[str, Any]):
     """
@@ -76,6 +82,7 @@ async def run_finance_analysis_crew_in_background(inputs: Dict[str, Any]):
     current_month_year = inputs.get('current_month_year', 'N/A')  # current_month_year 추가
     print(f"\n[Background Task] CrewAI 금융 분석 시작 (회사: {company_name}, 월: {current_month_year})")
 
+    result_to_save = None
     try:
         crew_instance = AiTest()
         # CrewAI를 실행하고 결과를 받습니다. (동기 함수이므로 asyncio.to_thread 사용)
@@ -111,6 +118,19 @@ async def run_finance_analysis_crew_in_background(inputs: Dict[str, Any]):
             'finance_info': final_json_output  # 파싱된 JSON 객체를 저장
         }
 
+        print(f'SAVE TO DB DATA : {finance_insert_info}')
+
+
+        result_to_save = StandardResponse(
+            code=200,
+            message=f"{company_name} Finance analysis completed successfully.",
+            category="Financial",
+            companyName=f"{company_name}",
+            data=final_json_output
+        )
+        print(f'SEND TO SFDC DATA : {result_to_save}')
+        sfdc_connect.send_to_sfdc(result_to_save)
+
         print(
             f'[Background Task] 데이터베이스에 저장: {finance_insert_info.get("company_name")} - {finance_insert_info.get("current_month")}')
         await save_data_to_collections(finance_insert_info)
@@ -119,7 +139,14 @@ async def run_finance_analysis_crew_in_background(inputs: Dict[str, Any]):
     except Exception as e:
         print(f"\n[Background Task] CrewAI 금융 분석 중 심각한 오류 발생: {e}")
         traceback.print_exc()
-
+        result_to_save = StandardResponse(
+            code=500,
+            message=f"{company_name} Finance analysis completed Fail.",
+            category="Financial",
+            companyName=f"{company_name}",
+            data=e
+        )
+        sfdc_connect.send_to_sfdc(result_to_save)
 
 # --- FastAPI Endpoint ---
 @app.post("/finance_analysis")
@@ -187,7 +214,6 @@ async def read_root():
     return {"message": "Welcome to the AI Financial Analysis Crew API!"}
 
 
-
 # CrewAI 작업을 백그라운드에서 실행할 함수
 async def run_salesforce_crew_in_background(inputs: dict):
     try:
@@ -200,6 +226,7 @@ async def run_salesforce_crew_in_background(inputs: dict):
 
         # 최종 결과는 crew_output_object.raw 에 있을 가능성이 높습니다.
         raw_summary_string_from_output = crew_output_object.raw
+        final_parsed_list = None
 
         if isinstance(raw_summary_string_from_output, str) and \
                 raw_summary_string_from_output.startswith("'") and raw_summary_string_from_output.endswith("'"):
@@ -213,10 +240,26 @@ async def run_salesforce_crew_in_background(inputs: dict):
 
         print(f'Final Parsed List (Background): {final_parsed_list}')
 
+        result_to_save = StandardResponse(
+            code=200,
+            message="Salesforce Org's analysis completed successfully.",
+            category="Analysis",
+            data=final_parsed_list
+        )
+
 
     except Exception as e:
         print(f"Background CrewAI error at {datetime.now()}: {e}")
+        result_to_save = StandardResponse(
+            code=500,
+            message=f"Salesforce Org's analysis Fail : {e}",
+            category="Analysis",
+            data=e
+        )
         traceback.print_exc()
+
+    print(f'before send to sfdc : {result_to_save}')
+    sfdc_connect.send_to_sfdc(result_to_save)
 
 
 @app.get('/org_analysis')
@@ -241,7 +284,6 @@ class ABMRequest(BaseModel):
     AnnualRevenue: str
     Industry: str
 
-# Serper 검색 결과 함수 (선택사항)
 def search_serper(query: str) -> str:
     api_key = os.getenv("GS_SERPER_API_KEY")
     if not api_key:
@@ -291,48 +333,41 @@ def run_abm_job(inputs: dict, job_id: str):
 ## JH
 
 class Activity(BaseModel):
-    """
-    단일 영업 활동의 세부 정보를 정의합니다.
-    """
     ActivityDate: str = Field(..., example="2024-06-09", description="활동 발생 날짜 (YYYY-MM-DD)")
     Subject: str = Field(..., example="공고", description="활동의 주제 또는 제목")
     Description: str = Field(..., example="• 사업기간 : 2024년 10월 ~ 2025년 9월 (12개월)...", description="활동에 대한 상세 설명")
 
 
 class SalesActivity(BaseModel):
-    """
-    회사와 관련된 모든 영업 활동 데이터를 정의합니다.
-    """
     company: str = Field(..., example="현대자동차", description="분석 대상 회사의 이름")
     activity: List[Activity] = Field(..., description="회사와 관련된 영업 활동 리스트")
 
-
-# --- 백그라운드 CrewAI 처리 함수 ---
-
 async def run_crew_process_in_background(inputs: Dict):
-    """
-    CrewAI 작업을 백그라운드에서 실행하고 그 결과를 처리합니다.
-    이 함수의 반환 값은 클라이언트에게 직접 전달되지 않으므로,
-    결과는 로그로 출력하거나 파일/DB에 저장해야 합니다.
-    """
     company_name = inputs.get('company', 'Unknown Company')
     print(f"백그라운드 CrewAI 프로세스 시작 (회사: {company_name})")
+
+    result_to_save: StandardResponse # Type hint for clarity
+
     try:
         crew_instance = SbtProject()
-        # kickoff 메서드는 최종 태스크의 raw 문자열 출력을 반환합니다.
-        raw_result_string = await asyncio.to_thread(crew_instance.crew().kickoff, inputs=inputs)
-
-        print(f'CrewAI 프로세스 완료 - 원시 결과 문자열: {raw_result_string}')  # 디버깅을 위한 원시 결과 출력
+        crew_output_object  = await asyncio.to_thread(crew_instance.crew().kickoff, inputs=inputs)
+        raw_result_string = crew_output_object.raw
+        print(f'CrewAI 프로세스 완료 - 원시 결과 문자열: {raw_result_string}')
 
         parsed_result = None
         try:
-            # CrewAI의 kickoff 결과가 이미 JSON 문자열일 경우 바로 파싱
             parsed_result = json.loads(raw_result_string)
             print("CrewAI 결과가 성공적으로 JSON으로 파싱되었습니다.")
+            result_to_save = StandardResponse( # <-- This is where StandardResponse is used
+                code=200,
+                message="Sales activity analysis completed successfully.",
+                category="Summary",
+                companyNmae=f"{company_name}",
+                data=parsed_result
+            )
         except json.JSONDecodeError as e:
             print(f"JSON 디코딩 오류 발생: {e}")
             print(f"원시 문자열에서 JSON 블록 추출 시도 중...")
-            # 직접 파싱 실패 시, ```json ... ``` ``` 블록에서 JSON 추출 시도
             import re
             json_match = re.search(r'```json\n(.*?)```', raw_result_string, re.DOTALL)
             if json_match:
@@ -340,39 +375,66 @@ async def run_crew_process_in_background(inputs: Dict):
                 try:
                     parsed_result = json.loads(json_string)
                     print("JSON 블록을 성공적으로 추출하고 파싱했습니다.")
+                    result_to_save = StandardResponse( # <-- This is where StandardResponse is used
+                        code=200,
+                        message="Sales activity analysis completed (JSON extracted).",
+                        category="Summary",
+                        companyNmae=f"{company_name}",
+                        data=parsed_result
+                    )
                 except json.JSONDecodeError as inner_e:
                     print(f"추출된 JSON 블록 파싱 오류: {inner_e}")
-                    parsed_result = {"error": "JSON 파싱 실패 (추출 후)", "raw_output": raw_result_string}
+                    result_to_save = StandardResponse( # <-- This is where StandardResponse is used
+                        code=500,
+                        message=f"Sales activity analysis completed but JSON block parsing failed: {inner_e}",
+                        category="Summary",
+                        companyNmae=f"{company_name}",
+                        data={"raw_output": raw_result_string} # Ensure this is JSON-serializable
+                    )
             else:
-                parsed_result = {"error": "JSON 파싱 실패 (JSON 블록 없음)", "raw_output": raw_result_string}
+                result_to_save = StandardResponse( # <-- This is where StandardResponse is used
+                    code=500,
+                    message="Sales activity analysis completed but no parsable JSON block found.",
+                    category="Summary",
+                    companyNmae=f"{company_name}",
+                    data={"raw_output": raw_result_string}
+                )
 
-        # 최종 파싱된 결과 출력 (또는 DB/파일 저장)
-        print(f"최종 파싱된 CrewAI 결과 (회사: {company_name}): {parsed_result}")
-        # TODO: 여기에 parsed_result를 데이터베이스에 저장하거나,
-        # 다른 API로 전송하거나, 파일로 저장하는 등의 후속 로직을 추가하세요.
+        print(f"최종 파싱된 CrewAI 결과 (회사: {company_name}): {result_to_save}")
+
+        sfdc_connect.send_to_sfdc(result_to_save)
+
 
     except Exception as e:
         print(f"\n백그라운드 CrewAI 프로세스 실행 중 오류 발생 (회사: {company_name}): {e}")
-        traceback.print_exc()  # 오류 스택 트레이스 출력
+        traceback.print_exc()
+        error_result_to_save = StandardResponse(
+            code=500,
+            message=f"Critical error during sales activity analysis: {str(e)}",
+            category="Summary",
+            data={"traceback": traceback.format_exc()}
+        )
+
 
 
 # --- FastAPI 엔드포인트 ---
 
-@app.post("/acitivty_analysis")  # POST 엔드포인트로 변경
+@app.post("/acitivty_summary")  # POST 엔드포인트로 변경
 async def analyze_sales_activity(
         sales_data: SalesActivity,  # 요청 본문으로부터 SalesActivity 모델을 받음
         background_tasks: BackgroundTasks
 ):
-    """
-    영업 활동 데이터를 받아 백그라운드에서 CrewAI 분석 작업을 시작합니다.
-    분석 작업은 즉시 반환되며, 결과는 백그라운드에서 처리됩니다.
-    """
     print('API 엔드포인트 호출됨: CrewAI 프로세스 시작 중...')
 
-    # Pydantic 모델에서 받은 데이터를 CrewAI 입력 형식에 맞게 변환 (이미 맞는 형식)
     inputs = sales_data.dict()  # Pydantic 모델을 딕셔너리로 변환
+    raw_inputs = sales_data.dict()
 
-    print(f'CrewAI에 전달될 입력: {inputs.get("company", "N/A")}')
+    # CrewAI 태스크에서 'sales_activity' 변수를 기대하므로,
+    # 'activity' 데이터를 'sales_activity' 키로 전달하도록 수정합니다.
+    inputs = {
+        "company": raw_inputs.get("company"),
+        "sales_activity": raw_inputs.get("activity") # 'activity' 리스트를 'sales_activity' 키로 매핑
+    }
 
     # CrewAI 작업을 백그라운드 태스크로 추가
     background_tasks.add_task(run_crew_process_in_background, inputs)

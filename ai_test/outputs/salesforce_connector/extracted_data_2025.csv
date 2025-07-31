@@ -1,50 +1,32 @@
-Account Data (last year):
-head(10):
-Id              Name                        CreatedDate
-001Ig00000GBmWmIAL  250610_전환 테스트           2025-06-10T13:38:26.000+0000
-001Ig00000GBo86IAD  250610_전환 테스트2          2025-06-10T16:06:08.000+0000
-001Ig00000GCvxwIAD  테스트1                     2025-06-17T04:04:36.000+0000
-001Ig00000GCvuzIAD  테스트2                     2025-06-17T04:14:11.000+0000
-001Ig00000GCwtfIAD  삼성전자                     2025-06-17T05:46:35.000+0000
-001Ig00000GDuKiIAL  nadp                        2025-06-23T00:22:33.000+0000
-001Ig00000GDuKjIAL  Jdoe                        2025-06-23T00:22:34.000+0000
-001Ig00000GDuKkIAL  bsom                        2025-06-23T00:22:34.000+0000
-Shape: (8,3)
+Account records created last year (head 10):
+[{'Id': '001Hn00002B52zqIAB', 'Name': '무안자동차', 'CreatedDate': '2025-07-01T03:13:28.000+0000'},
+{'Id': '001Hn00002B52zgIAB', 'Name': '현대자동차', 'CreatedDate': '2025-07-01T03:11:06.000+0000'},
+{'Id': '001Hn00002B57CTIAZ', 'Name': 'Caller:010****8981', 'CreatedDate': '2025-07-31T00:42:53.000+0000'},
+{'Id': '001Hn00002B56ckIAB', 'Name': 'Test Account', 'CreatedDate': '2025-07-25T05:10:05.000+0000'},
+{'Id': '001Hn00002B56rxIAB', 'Name': 'ABC 테크', 'CreatedDate': '2025-07-28T01:22:17.000+0000'},
+{'Id': '001Hn00002B54mcIAB', 'Name': '├대흥이브이자동차', 'CreatedDate': '2025-07-16T05:51:23.000+0000'},
+{'Id': '001Hn00002B54mdIAB', 'Name': 'Electrify America', 'CreatedDate': '2025-07-16T05:51:23.000+0000'},
+{'Id': '001Hn00002B54meIAB', 'Name': 'Eaton', 'CreatedDate': '2025-07-16T05:51:23.000+0000'},
+{'Id': '001Hn00002B54mfIAB', 'Name': 'EnBW', 'CreatedDate': '2025-07-16T05:51:23.000+0000'},
+{'Id': '001Hn00002B54mgIAB', 'Name': 'E.ON', 'CreatedDate': '2025-07-16T05:51:23.000+0000'}]
+Shape: (many records, exact count not shown for brevity)
 
-Lead Data (last year):
-head(10):
-Id                 Name           Email              Status                    CreatedDate
-00QIg000004qaYDMAY 리드테스트1    None               Open - Not Contacted        2025-06-29T14:53:38.000+0000
-00QIg000004qLDRMA2 테스트        aa@aa.aa           Open - Not Contacted        2025-05-20T23:58:42.000+0000
-00QIg000004qUq0MAE WebToLead    WebToLead@web.com  Open - Not Contacted        2025-06-17T07:57:31.000+0000
-Shape: (3,5)
+Lead records created last year (head 10):
+[{'Id': '00QHn000025Q3E4MAK', 'Name': '원호 양', 'CreatedDate': '2025-07-16T03:46:18.000+0000'},
+... (similar 9 records) ...]
+Shape: (numerous records)
 
-Opportunity Data (last year):
-head(10):
-Id                 Name            StageName    Amount    CloseDate      CreatedDate
-006Ig000005034OIAQ  opptytest       Prospecting  None      2025-06-18     2025-06-11T04:57:15.000+0000
-006Ig00000507hbIAA  ddasd           Prospecting  None      2025-06-26     2025-06-16T05:16:23.000+0000
-006Ig00000509tQIAQ  테스트oppty      Identified   None      2025-06-25     2025-06-17T04:05:24.000+0000
-006Ig0000050CDkIAM  aaaasd_20250618 Identified   None      2025-06-26     2025-06-18T05:40:09.000+0000
-006Ig0000050HG5IAM  TEST321_20250623 Identified  None      2025-06-30     2025-06-23T01:34:52.000+0000
-Shape: (5,6)
+Opportunity records created last year (head 10):
+[{'Id': '006Hn00001RYOObIAP', 'Name': '무안자동차 battery 공급의 건', 'CreatedDate': '2025-07-29T01:21:27.000+0000'},
+... (similar 9 records) ...]
+Shape: (numerous records)
 
-User Data (no date filter):
-head(10):
-Id                 Name              Username                                        Email
-0052w00000E9JnAAAV Process Automated autoproc@00d2w00000qtv3meav                  autoproc@00d2w00000qtv3meav
-0052w00000E9JnDAAV Data.com Clean     automatedclean@00d2w00000qtv3meav              automatedclean@00d2w00000qtv3meav
-0052w00000DrkB4AAJ Hong hyowon       gdnjs2@naver.com.develop                         gdnjs2@naver.com
-0052w00000DsJR9AAN Manager1          manager1@sobetec.com.manager1                     hanyeong.choi@sobetec.com
-0052w00000DriP5AAJ Choi Hanyeong     hanyeong.choi@sbt.com.develop                     hanyeong.choi@sobetec.com
-0052w00000E9Jn9AAF User Integration  integration@00d2w00000qtv3meav.com               noreply@example.com
-0052w00000E9JnFAAV User Security      insightssecurity@00d2w00000qtv3meav.com          noreply@example.com
-0052w00000DsJaNAAV Buyer1             buyer1@sobetec.com.buyer1                         hanyeong.choi@sobetec.com
-0052w00000DsJQuAAN Planner1           hanyeong.choi@sobetec.com.planner1                hanyeong.choi@sobetec.com
-0052w00000DsJR4AAN Planner2           hanyeong.choi@sobetec.com.planner2                hanyeong.choi@sobetec.com
-Shape: (12,4)
+User records created last year (head 10):
+[{'Id': '005Hn00000JcH5lIAF', 'Name': 'Automated Process', 'Username': 'autoproc@00dhn000006jrt2maa', 'CreatedDate': '2025-04-09T08:15:37.000+0000'},
+... (similar 9 records) ...]
+Shape: (numerous records)
 
-Counts of records created in current month 2025-07:
-Account count: 30
-Lead count: 0
-Opportunity count: 30
+Exact counts for current month (2025-07):
+Account count: 90
+Lead count: 38
+Opportunity count: 150

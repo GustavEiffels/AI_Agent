@@ -9,7 +9,7 @@ class SalesforceExtractTool(BaseTool):
 
     def _run(self, query: str) -> str:
         try:
-            sf = Salesforce(username=os.getenv('HS_SF_USERNAME'), password=os.getenv('HS_SF_PASSWORD'), security_token=os.getenv('HS_SF_TOKEN'))
+            sf = Salesforce(username=os.getenv('MAIN_SF_USERNAME'), password=os.getenv('MAIN_SF_PASSWORD'), security_token=os.getenv('MAIN_SF_TOKEN'))
             result = sf.query_all(query)  # 전체 데이터 쿼리
             df = pd.DataFrame(result['records'])
             df.drop(['attributes'], axis=1, inplace=True)  # 정리
