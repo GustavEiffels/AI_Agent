@@ -13,8 +13,8 @@ services:
     restart: always
 
   crewai_app:
-    image: ai_test:latest
-    container_name: crewai_application
+    image: sbt_crewai
+    container_name: sbt_crewai
     ports:
       - "8009:8000"
     env_file:

@@ -2,10 +2,9 @@ import functools, os
 import json
 import warnings
 import traceback
-from ai_test.jh_crew import SbtProject
 from contextlib import asynccontextmanager
 from typing import Any, Callable
-from fastapi import FastAPI, HTTPException, BackgroundTasks
+from fastapi import FastAPI, BackgroundTasks
 from pydantic import BaseModel, Field
 from .crew import AiTest
 from dotenv import load_dotenv
@@ -19,6 +18,7 @@ import asyncio
 import requests
 from uuid import uuid4
 from typing import Dict, List
+from ai_test.jh_crew import SbtProject
 import ai_test.simple_main_sfdc as sfdc_connect
 
 warnings.filterwarnings("ignore", category=SyntaxWarning, module="pysbd")
