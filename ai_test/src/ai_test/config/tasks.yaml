@@ -171,7 +171,20 @@ financial_analysis_task:
     ```json
     {
       "company_name": "{company_name}",
-      "financial_data_by_period": [ # This will contain consolidated data by period
+      "key_trends": {
+        "revenue_trend": "...",
+        "operating_income_trend": "...",
+        "net_income_trend": "...",
+        "asset_liability_structure_trend": "...",
+        "profitability_trend": "...",
+        "liquidity_trend": "..."
+      },
+      "financial_outlook": "...",
+      "risks_and_opportunities": {
+        "risks": "...",
+        "opportunities": "..."
+      },
+      "data": { # This is the main change: consolidating raw data under a single 'data' key
         "YYYY_Annual_or_Q": { # Example: "2023_Annual", "2022_4Q"
           "asset_moveable": ...,
           "asset_unmoveable": ...,
@@ -183,23 +196,9 @@ financial_analysis_task:
           "gross_profit": ...,
           "operating_income": ...,
           "net_income": ...
-        },
-        // ... for approximately the last two years (all available periods within that period)
-      ],
-      "key_trends": {
-        "revenue_trend": "...",
-        "operating_income_trend": "...",
-        "net_income_trend": "...",
-        "asset_liability_structure_trend": "...",
-        "profitability_trend": "...",
-        "liquidity_trend": "...",
-        // ... other relevant trends
+        }
       },
-      "financial_outlook": "...",
-      "risks_and_opportunities": [
-        "Risk 1",
-        "Opportunity 1"
-      ]
+      "status": "data_collected"
     }
     ```
     If financial analysis was NOT applicable (international company with no valid ticker, or parsing failed), the JSON should be:

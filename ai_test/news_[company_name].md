@@ -1,23 +1,44 @@
 [
   {
-    "date": "2025-07-31",
-    "source": "뉴스IS",
-    "headline": "'영업익 반토막' 삼성전자 \"2분기 저점, 하반기 반등\"(종합)",
-    "summary": "삼성전자는 2025년 2분기 연결 기준 매출 74조5663억원, 영업이익 4조6761억원을 기록했다. 전년 동기 대비 매출은 0.67% 소폭 상승했으나, 영업이익은 55.23% 급감했다. 반도체 사업 부진이 영업이익 감소의 주요 원인이다. 회사는 2분기를 저점으로 하반기 반등을 기대하고 있다.",
-    "url": "https://www.newsis.com/view/NISX20250731_0003273773"
+    "date": "2025-08-06",
+    "source": "The Wall Street Journal",
+    "headline": "Palantir Is Now a $400 Billion-Plus Company",
+    "summary": "Palantir Technologies reached a market capitalization above $400 billion, surpassing the combined worth of Salesforce and Adobe. This milestone marks a significant valuation achievement for Palantir in the data software sector.",
+    "url": "https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-08-06-2025/card/palantir-is-now-a-400-billion-plus-company-jKONqGtRU0BLhZyOMXx2?siteid=yhoof2&yptr=yahoo"
   },
   {
-    "date": "2025-07-31",
-    "source": "이코노미스트",
-    "headline": "2Q ‘발목’ 잡힌 삼성전자...하반기 반등 ‘총력전’",
-    "summary": "2025년 2분기 삼성전자는 매출 74조5663억원, 영업이익 4조6761억원을 공시했다. 매출은 전년 대비 0.67% 증가했으나 영업이익은 55.2% 감소했다. 부품 사업 실적 호조가 있었으나, 전체 영업이익 감소로 인해 하반기 반등을 위해 총력전을 벌이고 있다.",
-    "url": "https://economist.co.kr/article/view/ecn202507310011"
+    "date": "2025-08-05",
+    "source": "Zacks",
+    "headline": "Here's Why Salesforce.com (CRM) Fell More Than Broader Market",
+    "summary": "Salesforce.com (CRM) stock closed at $247.49, reflecting a 1.91% decline from the previous trading day. Market factors influencing this drop include sector performance and investor sentiment on cloud software stocks.",
+    "url": "https://finance.yahoo.com/news/heres-why-salesforce-com-crm-214503832.html"
   },
   {
-    "date": "2025-07-31",
-    "source": "연합뉴스",
-    "headline": "[2보] 삼성전자 2분기 영업이익 4조6천761억원…반도체 4천억원 그쳐",
-    "summary": "삼성전자는 2분기 연결 기준 영업이익이 4조6761억원으로 전년 동기 대비 55.23% 감소했다. 반도체 부문 영업이익은 4000억원에 머물렀고, DX(디지털 익스피리언스) 부문은 3조3000억원을 기록했다. 이번 영업이익은 시장 전망치 21.4% 하회하는 수치이다.",
-    "url": "https://www.yna.co.kr/view/AKR20250731044551527?input=1195m"
+    "date": "2025-08-05",
+    "source": "TechCrunch",
+    "headline": "Hacker used a voice phishing attack to steal Cisco customers’ personal information",
+    "summary": "Cisco disclosed a data breach involving the theft of customer names, organization names, addresses, email addresses, and phone numbers from Cisco.com users, raising concerns about cybersecurity risks affecting tech companies including Salesforce indirectly through industry implications.",
+    "url": "https://finance.yahoo.com/news/hacker-used-voice-phishing-attack-150303366.html"
+  },
+  {
+    "date": "2025-08-01",
+    "source": "ITBizNews",
+    "headline": "Genesys Announces $1.5 Billion Investment by Salesforce and ServiceNow",
+    "summary": "Salesforce and ServiceNow committed a $1.5 billion joint investment in Genesys. The funds will be used for share repurchases and to support strategic initiatives aimed at enhancing customer experience and cloud service collaboration.",
+    "url": "https://www.itbiznews.com/news/articleView.html?idxno=176427"
+  },
+  {
+    "date": "2025-08-06",
+    "source": "EPNC",
+    "headline": "그루브코리아, 고객 메시징 플랫폼 '루민' 리뉴얼…실시간 고객 여정 기...",
+    "summary": "Groove Korea renewed its customer messaging platform 'Lumin,' which leverages Salesforce Marketing Cloud data to support personalized bulk messaging and real-time customer journey enhancement, reflecting Salesforce's impact on Korean digital marketing solutions.",
+    "url": "https://www.epnc.co.kr/news/articleView.html?idxno=320613"
+  },
+  {
+    "date": "2025-08-01",
+    "source": "Venturesquare",
+    "headline": "버티컬바, 중기부 ‘딥테크 팁스’ 선정",
+    "summary": "VerticalBar plans to expand its services using various ERP and CRM systems including Salesforce. The CEO, previously involved in a global SaaS company, emphasizes growth through leveraging Salesforce’s cloud solutions in their technology development.",
+    "url": "https://www.venturesquare.net/997426"
   }
 ]
