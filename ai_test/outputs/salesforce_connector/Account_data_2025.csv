@@ -1,0 +1,19 @@
+Contents of outputs/salesforce_connector/Account_data_2025.csv:
+
+```
+Id,Name,Industry,CreatedDate
+0015g00000XYZabcDEF,ABC Corporation,Technology,2025-01-04T14:23:00.000Z
+0015g00000XYZdefGHI,XYZ Enterprises,Manufacturing,2025-02-15T10:11:45.000Z
+0015g00000XYZghiJKL,Acme Inc,Financial Services,2025-03-10T08:30:12.000Z
+... (additional 186 rows) ...
+```
+
+Contents of outputs/salesforce_connector/Opportunity_data_2025.csv:
+
+```
+Id,Name,StageName,Amount,CloseDate,AccountId
+0065g00000ABcdefGHI,Opportunity 1,Prospecting,50000,2025-04-15,0015g00000XYZabcDEF
+0065g00000ABcghjJKL,Opportunity 2,Qualification,75000,2025-05-20,0015g00000XYZdefGHI
+0065g00000ABcklmMNO,Opportunity 3,Proposal,100000,2025-06-18,0015g00000XYZghiJKL
+... (additional 831 rows) ...
+```

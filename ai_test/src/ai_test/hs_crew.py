@@ -11,23 +11,17 @@ load_dotenv()
 
 OUTPUTS_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), 'outputs'))
 
-
 @CrewBase
 class SalesforceCrewai():
     agents: List[BaseAgent]
     tasks: List[Task]
-
     agents_config: dict = {}
     tasks_config: dict = {}
 
-
     def __init__(self):
-        # 모든 outputs 디렉토리 미리 생성 (절대 경로)
-        os.makedirs(os.path.join(OUTPUTS_DIR, 'salesforce_connector'), exist_ok=True)
-        os.makedirs(os.path.join(OUTPUTS_DIR, 'data_analyzer'), exist_ok=True)
-        os.makedirs(os.path.join(OUTPUTS_DIR, 'summary_generator'), exist_ok=True)
-        os.makedirs(os.path.join(OUTPUTS_DIR, 'translator'), exist_ok=True)
-        os.makedirs(os.path.join(OUTPUTS_DIR, 'report_creator'), exist_ok=True)
+        # 모든 outputs 디렉토리 강제 생성
+        for folder in ['salesforce_connector', 'data_analyzer', 'summary_generator', 'translator', 'report_creator']:
+            os.makedirs(os.path.join(OUTPUTS_DIR, folder), exist_ok=True)
 
         self.current_year = datetime.now().year
         self.current_month = datetime.now().month
@@ -36,115 +30,163 @@ class SalesforceCrewai():
     def salesforce_connector(self) -> Agent:
         return Agent(
             role="Salesforce Data Extraction Expert",
-            goal="Securely and efficiently extract required data from Salesforce CRM",
-            backstory="You are a Salesforce API specialist, using simple-salesforce to query and retrieve data. You handle connections with security tokens and instance URLs, converting results to pandas DataFrames without errors.",
-            verbose = True,
+            goal="Extract Account and Opportunity data from Salesforce CRM for sales analysis",
+            backstory=(
+                "You are a Salesforce API specialist using simple-salesforce to query and retrieve "
+                "Account and Opportunity data. You securely connect using environment variables and "
+                "save results to CSV without errors."
+            ),
+            verbose=True,
             tools=[SalesforceExtractTool()]
         )
 
     @agent
     def data_analyzer(self) -> Agent:
         return Agent(
-            role="Data Analysis and Categorization Expert",
-            goal="Analyze extracted data and classify into sales, marketing, and customer service categories",
-            backstory="You are an expert in pandas and scikit-learn, but primarily use GPT-4.1-mini-2025-04-14 AI to perform analysis, clustering, and keyword extraction intelligently, minimizing manual coding.",
-            verbose = True
+            role="Sales Data Analysis Expert",
+            goal="Analyze Account and Opportunity CSV files to produce factual sales-related statistics only",
+            backstory=(
+                "You are a sales data analysis specialist. You only work with Account and Opportunity datasets "
+                "from Salesforce. You compute statistics such as total accounts, top industries, total opportunities, "
+                "revenue totals, and stage distributions for the given year. You never perform marketing or service analysis "
+                "and never fabricate results."
+            ),
+            verbose=True
         )
 
     @agent
     def summary_generator(self) -> Agent:
         return Agent(
             role="AI-Based Data Summary Expert",
-            goal="Transform analyzed data into concise and useful summaries",
-            backstory="You rely on GPT-4.1-mini-2025-04-14 AI for all summarization, using its NLP capabilities to generate insights without requiring user-coded logic.",
-            verbose = True
+            goal="Convert factual sales statistics into a concise English summary paragraph",
+            backstory="You use GPT only for summarization, not for generating or fabricating data.",
+            verbose=True
         )
 
     @agent
     def translator(self) -> Agent:
         return Agent(
             role="English to Korean Translation Expert",
-            goal="Accurately translate English summaries and reports into natural Korean",
-            backstory="You use GPT-4.1-mini-2025-04-14 AI exclusively for translations, ensuring context-aware and professional results without any manual code implementation.",
-            verbose = True
+            goal="Translate the English sales summary into accurate Korean, preserving business terms",
+            backstory="You translate summaries using GPT, ensuring consistent terminology like Opportunity=기회, Account=고객사.",
+            verbose=True
         )
 
     @agent
     def report_creator(self) -> Agent:
         return Agent(
             role="Report and Output Generation Expert",
-            goal="Compile summaries into PDF reports integrable with Salesforce",
-            backstory="You generate reports with reportlab, but embed GPT-4.1-mini-2025-04-14 AI outputs directly for content, focusing on visualization.",
-            verbose = True
+            goal="Compile translated summaries into text-based PDF reports",
+            backstory="You generate simple PDFs with text only, no charts or graphics.",
+            verbose=True
         )
 
     @task
     def data_extract_task(self) -> Task:
         return Task(
             description=(
-                f"Connect to Salesforce and query Account, Lead, Opportunity, and User. "
-                f"Use SOQL to extract data created in the last year (up to {self.current_year}). "
-                f"Additionally, extract the **exact count of Accounts, Leads, and Opportunities created in the current month ({self.current_year}-{self.current_month:02d})**. "  # 이번 달 생성 건수 추출 지시 추가
-                f"Utilize environment variables for connection. Store all results as pandas DataFrames. "
-                f"Example SOQL for last year: SELECT Id, Name, Email, Status FROM Lead WHERE CreatedDate > LAST_YEAR. "
-                f"Example SOQL for current month count: SELECT COUNT(Id) FROM Account WHERE CreatedDate = THIS_MONTH."
+                f"Connect to Salesforce and query only Account and Opportunity objects. "
+                f"Extract data created in the last year (up to {self.current_year}). "
+                f"For Account: SELECT Id, Name, Industry, CreatedDate FROM Account WHERE CreatedDate >= 2025-01-01T00:00:00Z "
+                f"For Opportunity: SELECT Id, Name, StageName, Amount, CloseDate, AccountId FROM Opportunity WHERE CreatedDate >= 2025-01-01T00:00:00Z "
+                f"Save each as separate CSV files in outputs/salesforce_connector/. "
+                f"Do not include Leads or Users."
             ),
-            expected_output="Data summary (head(10), shape), category counts.",
+            expected_output="Two CSV files: Account_data_{current_year}.csv and Opportunity_data_{current_year}.csv",
             agent=self.salesforce_connector(),
-            output_file="outputs/salesforce_connector/extracted_data_{current_year}.csv"
+            output_file=f"outputs/salesforce_connector/Account_data_{self.current_year}.csv"
         )
 
     @task
     def data_analysis_task(self) -> Task:
         return Task(
-            description="Load the CSV file from outputs/salesforce_connector/extracted_data_{current_year}.csv using pandas. Clean the data with pandas (handle missing values, convert dates). Do NOT re-query Salesforce; analyze only the loaded CSV data. Use GPT-4.1-mini-2025-04-14 AI to perform clustering, categorization (sales/marketing/service), and trend analysis for {current_year}. Let the AI handle keyword extraction and stats computation intelligently via natural language prompts, without manual coding. Focus on {current_year} trends, such as quarterly growth in the current year.",
-            expected_output="Categorized lists (5 samples/category), 10 bullet points of AI-generated stats for {current_year}, clustering summary.",
+            description=(
+                f"Load both CSV files: outputs/salesforce_connector/Account_data_{self.current_year}.csv "
+                f"and outputs/salesforce_connector/Opportunity_data_{self.current_year}.csv using pandas. "
+                f"Clean the data (handle missing values, convert dates). "
+                f"Compute and output factual and verifiable sales-related statistics for {self.current_year} "
+                f"in a structured JSON format with separate keys for each metric category:\n"
+                f"- 'account_summary': Total number of Accounts created and Top 5 Industries by count.\n"
+                f"- 'opportunity_summary': Total Opportunities closed, total & average Opportunity Amount (USD).\n"
+                f"- 'stage_distribution': Count of Opportunities by StageName.\n"
+                f"- 'quarterly_revenue': Total Opportunity revenue (USD) per quarter.\n"
+                f"Ensure numeric formatting is consistent (commas for thousands, 2 decimal places for currency). "
+                f"No clustering, keyword extraction, or speculative analysis — only values calculated directly from the CSV data."
+            ),
+            expected_output=(
+                f"Structured JSON file for {self.current_year} containing keys: "
+                f"'account_summary', 'opportunity_summary', 'stage_distribution', 'quarterly_revenue'."
+            ),
             agent=self.data_analyzer(),
-            output_file="outputs/data_analyzer/analysis_results_{current_year}.json"
+            output_file=f"outputs/data_analyzer/analysis_results_{self.current_year}.json"
         )
 
     @task
     def summary_generation_task(self) -> Task:
         return Task(
-            description="Load the analysis JSON from outputs/data_analyzer/analysis_results_{current_year}.json. Use GPT-4.1-mini-2025-04-14 AI to summarize data by category, "
-                        "generating natural language insights for {current_year} trends. Focus on business decisions; AI handles entity recognition and content creation fully, "
-                        "labeling all insights as {current_year} data. expected_output: >",
-            expected_output="AI-generated bullet points (10 total) for {current_year}, one paragraph summarizing {current_year} insights.",
+            description=(
+                f"Load the plain text analysis from outputs/data_analyzer/analysis_results_{self.current_year}.txt. "
+                f"Using only the computed statistics, produce a concise, professional business summary in English "
+                f"as a valid JSON object with three keys: 'Analysis', 'Conclusion', and 'Strategy'.\n"
+                f"- 'Analysis': Detailed factual summary of the statistics, in executive report style.\n"
+                f"- 'Conclusion': Key insights and implications from the analysis.\n"
+                f"- 'Strategy': Recommended actions or next steps based on the conclusion.\n"
+                f"Example output:\n"
+                f"{{\n"
+                f'  "Analysis": "In {self.current_year}, a total of ...",\n'
+                f'  "Conclusion": "The sales performance indicates ...",\n'
+                f'  "Strategy": "Focus on expanding high-performing industries ..."\n'
+                f"}}"
+            ),
+            expected_output=f"JSON object with keys 'Analysis', 'Conclusion', and 'Strategy' for {self.current_year}.",
             agent=self.summary_generator(),
-            output_file="outputs/summary_generator/summary_{current_year}.md"
+            output_file=f"outputs/summary_generator/summary_{self.current_year}.json"
         )
 
     @task
     def translation_task(self) -> Task:
         return Task(
             description=(
-                f"Load the analysis JSON from {os.path.join(OUTPUTS_DIR, 'data_analyzer', f'analysis_results_{self.current_year}.json')}. "
-                f"Use GPT-4.1-mini-2025-04-14 AI to summarize data by category, generating natural language insights for {self.current_year} trends. "
-                f"Focus on business decisions; AI handles entity recognition and content creation fully, labeling all insights as {self.current_year} data. "
-                f"**The summary MUST be a JSON formatted string, representing a Python list of concise insights/paragraphs. "
-                f"Each element in the list should be a string. Example: '[\"Insight 1.\", \"Insight 2.\", \"Paragraph insight goes here.\"]'**" # JSON 형식으로 출력 명시
+                f"Load the JSON file from outputs/summary_generator/summary_{self.current_year}.json. "
+                f"Translate each value into Korean, keeping the same JSON structure with keys 'analysis', 'conclusion', and 'strategy'. "
+                f"Preserve all numbers and business terms accurately "
+                f"(Opportunity=기회, Account=고객사, Industry=산업, revenue=수익). "
+                f"The final output must be a raw, valid JSON string, without any additional text, explanations, or markdown fences like '```json'."
             ),
             expected_output=(
-                f"A JSON formatted string representing a list of concise AI-generated insights for {self.current_year}, "
-                f"like: '[\"Insight 1.\", \"Insight 2.\", \"Paragraph insight goes here.\"]'" # JSON 형식 예시
+                f"A raw JSON string with keys 'analysis', 'conclusion', and 'strategy' for {self.current_year}, containing the translated summary. "
+                f"The output must not be wrapped in markdown fences or other formatting."
             ),
             agent=self.translator(),
-            output_file=None
+            output_file=f"outputs/translator/translated_summary_{self.current_year}.json"
         )
 
 
     @crew
     def crew(self) -> Crew:
         return Crew(
-            agents=[self.salesforce_connector(), self.data_analyzer(), self.summary_generator(), self.translator(),
-                    self.report_creator()],
-            tasks=[self.data_extract_task(), self.data_analysis_task(), self.summary_generation_task(),
-                   self.translation_task()],
+            agents=[
+                self.salesforce_connector(),
+                self.data_analyzer(),
+                self.summary_generator(),
+                self.translator(),
+                self.report_creator()
+            ],
+            tasks=[
+                self.data_extract_task(),
+                self.data_analysis_task(),
+                self.summary_generation_task(),
+                self.translation_task()
+            ],
             process=Process.sequential
         )
 
     def run(self, inputs=None):
         try:
+            # 항상 폴더 체크 및 생성
+            for folder in ['salesforce_connector', 'data_analyzer', 'summary_generator', 'translator', 'report_creator']:
+                os.makedirs(os.path.join(OUTPUTS_DIR, folder), exist_ok=True)
+
             result = self.crew().kickoff(inputs=inputs or {})
             print(f"Crew completed: {result}")
             return result

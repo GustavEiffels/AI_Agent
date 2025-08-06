@@ -71,6 +71,7 @@ class FinancialAnalysisRequest(BaseModel):
 class StandardResponse(BaseModel):
     code: int = Field(..., description="HTTP status-like code (e.g., 200 for success, 500 for error)")
     message: str = Field(..., description="A human-readable message about the operation status")
+    company_name: str = Field(..., description="SBT GLOBAL")
     category: str = Field(..., description="Categorization of the response (e.g., 'finance_analysis', 'sales_activity', 'error')")
     data: Any = Field(None, description="The actual data payload, can be any JSON-serializable object")
 
@@ -125,7 +126,7 @@ async def run_finance_analysis_crew_in_background(inputs: Dict[str, Any]):
             code=200,
             message=f"{company_name} Finance analysis completed successfully.",
             category="Financial",
-            companyName=f"{company_name}",
+            company_name=f"{company_name}",
             data=final_json_output
         )
         print(f'SEND TO SFDC DATA : {result_to_save}')
@@ -243,6 +244,7 @@ async def run_salesforce_crew_in_background(inputs: dict):
         result_to_save = StandardResponse(
             code=200,
             message="Salesforce Org's analysis completed successfully.",
+            company_name='',
             category="Analysis",
             data=final_parsed_list
         )
@@ -253,6 +255,7 @@ async def run_salesforce_crew_in_background(inputs: dict):
         result_to_save = StandardResponse(
             code=500,
             message=f"Salesforce Org's analysis Fail : {e}",
+            company_name='',
             category="Analysis",
             data=e
         )
@@ -362,7 +365,7 @@ async def run_crew_process_in_background(inputs: Dict):
                 code=200,
                 message="Sales activity analysis completed successfully.",
                 category="Summary",
-                companyNmae=f"{company_name}",
+                company_name=f"{company_name}",
                 data=parsed_result
             )
         except json.JSONDecodeError as e:
@@ -379,7 +382,7 @@ async def run_crew_process_in_background(inputs: Dict):
                         code=200,
                         message="Sales activity analysis completed (JSON extracted).",
                         category="Summary",
-                        companyNmae=f"{company_name}",
+                        company_name=f"{company_name}",
                         data=parsed_result
                     )
                 except json.JSONDecodeError as inner_e:
@@ -388,7 +391,7 @@ async def run_crew_process_in_background(inputs: Dict):
                         code=500,
                         message=f"Sales activity analysis completed but JSON block parsing failed: {inner_e}",
                         category="Summary",
-                        companyNmae=f"{company_name}",
+                        company_name=f"{company_name}",
                         data={"raw_output": raw_result_string} # Ensure this is JSON-serializable
                     )
             else:
@@ -396,7 +399,7 @@ async def run_crew_process_in_background(inputs: Dict):
                     code=500,
                     message="Sales activity analysis completed but no parsable JSON block found.",
                     category="Summary",
-                    companyNmae=f"{company_name}",
+                    company_name=f"{company_name}",
                     data={"raw_output": raw_result_string}
                 )
 
@@ -419,7 +422,7 @@ async def run_crew_process_in_background(inputs: Dict):
 
 # --- FastAPI 엔드포인트 ---
 
-@app.post("/acitivty_summary")  # POST 엔드포인트로 변경
+@app.post("/activity_summary")  # POST 엔드포인트로 변경
 async def analyze_sales_activity(
         sales_data: SalesActivity,  # 요청 본문으로부터 SalesActivity 모델을 받음
         background_tasks: BackgroundTasks
