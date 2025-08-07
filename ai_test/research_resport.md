@@ -1,12 +1,7 @@
-- Salesforce, Inc. is a leading global cloud-based software company specializing in customer relationship management (CRM) solutions, helping businesses enhance sales, marketing, and customer service functions.
-- The company continues to expand its product and service offerings, focusing on digital transformation and cloud adoption, with emphasis on integrating ERP and CRM systems.
-- Recent Korean media reported Salesforce's involvement in significant partnerships and investments such as a $1.5 billion joint investment with ServiceNow in Genesys, highlighting its strategic collaborations in customer experience and cloud services.
-- Salesforce's marketing cloud data supports advanced customer messaging platforms, as seen in the Korean market with platforms like 'Lumin' which leverages Salesforce marketing cloud for personalized customer engagement.
-- The company actively pursues innovation and market expansion, leveraging strategic acquisitions and product platform enhancements to sustain growth amid competitive challenges.
-- Salesforce's operational focus includes improving customer experience management, real-time data-driven marketing, and AI-based cloud tools.
-- The company shows a pattern of steady operational profitability and asset growth based on recent years' financial data (2024-2025), indicating stable business operations supporting its industry leadership.
-- Salesforce demonstrates commitment to fostering digital innovation ecosystems and deepening customer-cloud integration globally.
-- While financial news confirms market valuation fluctuations, non-financial highlights for 2025 include strategic partnerships, technology platform enhancements, and expanded cloud adoption efforts.
-- Salesforce's presence in Korea and globally reflects its role as a pivotal player in cloud-based business solutions facilitating enterprise digital transformation.
-
-This summary focuses on Salesforce’s company overview, recent business developments, industry position, partnerships, and non-financial news relevant in 2025.
+- 에스비티글로벌(대표 서병구)은 IT 솔루션 전문기업으로 20년 이상의 업력을 보유한 기업이며, 다양한 IT 서비스와 솔루션을 제공하고 있다.
+- 2025년 4월 서울 코엑스에서 개최된 '2025 월드 IT 쇼(World IT Show 2025, WIS 2025)'에 참가하여 최신 IT 트렌드와 솔루션을 선보이며 시장 내 입지를 강화하였다.
+- 2025년 4월, 아마존웹서비스(AWS)와 공동으로 'SAP on AWS 비즈니스 혁신 세미나'를 성공적으로 개최하여 디지털 혁신과 클라우드 기반 비즈니스 솔루션 분야에서의 역량과 파트너십을 강조하였다.
+- 자체 개발한 ETL 플랫폼 '인포랙티브(INFORACTIVE) ETL'은 2025년 1월 한국정보통신기술협회(TTA)로부터 GS인증 1등급을 획득하여 기술력과 신뢰성을 인정받았다.
+- 에스비티글로벌은 IT 솔루션, 클라우드 서비스, 데이터 통합 및 비즈니스 혁신에 중점을 두고 있으며, 다양한 산업 분야의 고객을 대상으로 맞춤형 IT 컨설팅과 솔루션을 제공하고 있다.
+- 2024년 기준 약 290억 원의 매출과 20억 원 수준의 순이익을 내며 안정적인 운영을 유지하고 있으며, 고정 자산 투자와 디지털 혁신을 통한 미래 성장을 모색 중이다.
+- 시장에서의 경쟁력 확보를 위해 고객 맞춤형 서비스를 확대하고 있으며, 지속 가능한 성장을 위해 기술 고도화 및 전략적 제휴를 추진하고 있다.

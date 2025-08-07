@@ -1,44 +1,23 @@
 [
   {
-    "date": "2025-08-06",
-    "source": "The Wall Street Journal",
-    "headline": "Palantir Is Now a $400 Billion-Plus Company",
-    "summary": "Palantir Technologies reached a market capitalization above $400 billion, surpassing the combined worth of Salesforce and Adobe. This milestone marks a significant valuation achievement for Palantir in the data software sector.",
-    "url": "https://www.wsj.com/livecoverage/stock-market-today-dow-sp-500-nasdaq-08-06-2025/card/palantir-is-now-a-400-billion-plus-company-jKONqGtRU0BLhZyOMXx2?siteid=yhoof2&yptr=yahoo"
+    "date": "2025-04-22",
+    "source": "네이버 뉴스",
+    "headline": "에스비티글로벌, '2025 월드 IT 쇼' 참가... 20년 이상 업력으로 차별성 부각",
+    "summary": "에스비티글로벌은 2025년 4월 24일부터 26일까지 서울 코엑스에서 개최되는 '2025 월드 IT 쇼'에 참가해 최신 IT 솔루션과 서비스를 선보이며 시장 내 입지를 강화하였다. 20년 이상의 업력을 바탕으로 다양한 IT 분야에서 차별적인 기술력을 강조했다.",
+    "url": "https://kr.aving.net/news/articleView.html?idxno=1799421"
   },
   {
-    "date": "2025-08-05",
-    "source": "Zacks",
-    "headline": "Here's Why Salesforce.com (CRM) Fell More Than Broader Market",
-    "summary": "Salesforce.com (CRM) stock closed at $247.49, reflecting a 1.91% decline from the previous trading day. Market factors influencing this drop include sector performance and investor sentiment on cloud software stocks.",
-    "url": "https://finance.yahoo.com/news/heres-why-salesforce-com-crm-214503832.html"
+    "date": "2025-04-15",
+    "source": "네이버 뉴스",
+    "headline": "에스비티글로벌, AWS와 'SAP on AWS 비즈니스 혁신 세미나' 성료",
+    "summary": "에스비티글로벌은 아마존웹서비스(AWS)와 공동으로 2025년 4월 10일 서울에서 'SAP on AWS 비즈니스 혁신 세미나'를 성공적으로 개최하며 디지털 혁신과 클라우드 비즈니스 솔루션 분야에서의 역량과 파트너십을 부각시켰다.",
+    "url": "http://news.mt.co.kr/mtview.php?no=2025041515492376889"
   },
   {
-    "date": "2025-08-05",
-    "source": "TechCrunch",
-    "headline": "Hacker used a voice phishing attack to steal Cisco customers’ personal information",
-    "summary": "Cisco disclosed a data breach involving the theft of customer names, organization names, addresses, email addresses, and phone numbers from Cisco.com users, raising concerns about cybersecurity risks affecting tech companies including Salesforce indirectly through industry implications.",
-    "url": "https://finance.yahoo.com/news/hacker-used-voice-phishing-attack-150303366.html"
-  },
-  {
-    "date": "2025-08-01",
-    "source": "ITBizNews",
-    "headline": "Genesys Announces $1.5 Billion Investment by Salesforce and ServiceNow",
-    "summary": "Salesforce and ServiceNow committed a $1.5 billion joint investment in Genesys. The funds will be used for share repurchases and to support strategic initiatives aimed at enhancing customer experience and cloud service collaboration.",
-    "url": "https://www.itbiznews.com/news/articleView.html?idxno=176427"
-  },
-  {
-    "date": "2025-08-06",
-    "source": "EPNC",
-    "headline": "그루브코리아, 고객 메시징 플랫폼 '루민' 리뉴얼…실시간 고객 여정 기...",
-    "summary": "Groove Korea renewed its customer messaging platform 'Lumin,' which leverages Salesforce Marketing Cloud data to support personalized bulk messaging and real-time customer journey enhancement, reflecting Salesforce's impact on Korean digital marketing solutions.",
-    "url": "https://www.epnc.co.kr/news/articleView.html?idxno=320613"
-  },
-  {
-    "date": "2025-08-01",
-    "source": "Venturesquare",
-    "headline": "버티컬바, 중기부 ‘딥테크 팁스’ 선정",
-    "summary": "VerticalBar plans to expand its services using various ERP and CRM systems including Salesforce. The CEO, previously involved in a global SaaS company, emphasizes growth through leveraging Salesforce’s cloud solutions in their technology development.",
-    "url": "https://www.venturesquare.net/997426"
+    "date": "2025-01-20",
+    "source": "네이버 뉴스",
+    "headline": "에스비티글로벌 '인포랙티브 ETL' GS인증 1등급 획득...시장 신뢰 확보",
+    "summary": "에스비티글로벌이 자체 개발한 ETL 플랫폼 '인포랙티브(INFORACTIVE) ETL'이 한국정보통신기술협회(TTA)로부터 GS인증 1등급을 획득해 기술력과 신뢰성을 인정받았다. GS인증은 실제 운영 환경에서의 품질과 신뢰성을 보증하는 인증이다.",
+    "url": "https://www.etnews.com/20250120000058"
   }
 ]

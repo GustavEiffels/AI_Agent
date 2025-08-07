@@ -212,7 +212,7 @@ async def finance_analysis(
 @app.get("/")
 @time_it
 async def read_root():
-    return {"message": "Welcome to the AI Financial Analysis Crew API!"}
+    return {"message": "Welcome to the AI Financial Analysis Crew API! KAGOSHIMA 0923"}
 
 
 # CrewAI 작업을 백그라운드에서 실행할 함수
